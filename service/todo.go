@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/jinzhu/gorm"
+	"spicychicken.top/NeverTODO/backend/dao"
 	"spicychicken.top/NeverTODO/backend/model"
 	"spicychicken.top/NeverTODO/backend/pkgs/errx"
 )
@@ -16,15 +17,15 @@ func GetAllTables(tx *gorm.DB) (
 	var tags model.Tags
 	var taskTags model.TaskTags
 	// retrieve all tasks
-	if err := model.GetAllTasks(tx, &tasks); err != nil {
+	if err := dao.GetAllTasks(tx, &tasks); err != nil {
 		return tasks, tags, taskTags, errx.New(err)
 	}
 	// retrieve all tags
-	if err := model.GetAllTags(tx, &tags); err != nil {
+	if err := dao.GetAllTags(tx, &tags); err != nil {
 		return tasks, tags, taskTags, errx.New(err)
 	}
 	// retrieve all tags
-	if err := model.GetAllTaskTags(tx, &taskTags); err != nil {
+	if err := dao.GetAllTaskTags(tx, &taskTags); err != nil {
 		return tasks, tags, taskTags, errx.New(err)
 	}
 	return tasks, tags, taskTags, nil
@@ -43,13 +44,13 @@ type FullTasks []FullTask
 func GetFullTasks(tx *gorm.DB, fullTasks *FullTasks) error {
 	// retrieve all tasks
 	var tasks model.Tasks
-	if err := model.GetAllTasks(tx, &tasks); err != nil {
+	if err := dao.GetAllTasks(tx, &tasks); err != nil {
 		return errx.New(err)
 	}
 	// retrieve tags for each task
 	for i := 0; i < len(tasks); i++ {
 		var tags model.Tags
-		model.GetTagsByTaskID(tx, &tags, tasks[i].ID)
+		dao.GetTagsByTaskID(tx, &tags, tasks[i].ID)
 		*fullTasks = append(*fullTasks,
 			FullTask{
 				Task: tasks[i],
@@ -65,13 +66,13 @@ func GetFullTasksByTag(
 	log.Printf("GetFullTaskByTag(tagID: %d)\n", tagID)
 	// retrieve all tasks
 	var tasks model.Tasks
-	if err := model.GetTasksByTagID(tx, &tasks, tagID); err != nil {
+	if err := dao.GetTasksByTagID(tx, &tasks, tagID); err != nil {
 		return errx.New(err)
 	}
 	// retrieve tags for each task
 	for i := 0; i < len(tasks); i++ {
 		var tags model.Tags
-		if err := model.GetTagsByTaskID(
+		if err := dao.GetTagsByTaskID(
 			tx, &tags, tasks[i].ID); err != nil {
 			return errx.New(err)
 		}
@@ -92,7 +93,7 @@ func AddFullTask(tx *gorm.DB, taskContent string, tagsID []int) (model.Task, err
 	resultTask := model.Task{Content: taskContent}
 	// check tags exists
 	for _, tagID := range tagsID {
-		ok, err := model.IsExistTagID(tx, tagID)
+		ok, err := dao.IsExistTagID(tx, tagID)
 		if err != nil {
 			return resultTask, errx.New(err)
 		}
@@ -102,7 +103,7 @@ func AddFullTask(tx *gorm.DB, taskContent string, tagsID []int) (model.Task, err
 		}
 	}
 	// add new task
-	err := model.AddTask(
+	err := dao.AddTask(
 		tx, &resultTask)
 	if errx.New(err) != nil {
 		return resultTask, err
@@ -114,7 +115,7 @@ func AddFullTask(tx *gorm.DB, taskContent string, tagsID []int) (model.Task, err
 	}
 	// add new task-tag
 	for _, tagID := range tagsID {
-		if err := model.AddTagForTask(
+		if err := dao.AddTagForTask(
 			tx, int(taskID), tagID); err != nil {
 			return resultTask, errx.New(err)
 		}
@@ -126,7 +127,7 @@ func AddFullTask(tx *gorm.DB, taskContent string, tagsID []int) (model.Task, err
 // TaskID: ID of Task
 func DelFullTask(tx *gorm.DB, taskID int) error {
 	// errx if task exists
-	ok, err := model.IsExistTaskID(tx, taskID)
+	ok, err := dao.IsExistTaskID(tx, taskID)
 	if errx.New(err) != nil {
 		return err
 	}
@@ -135,11 +136,11 @@ func DelFullTask(tx *gorm.DB, taskID int) error {
 		return errx.New(err)
 	}
 	// delete all tags for this task
-	if err := model.DelAllTagsOfTask(tx, taskID); errx.New(err) != nil {
+	if err := dao.DelAllTagsOfTask(tx, taskID); errx.New(err) != nil {
 		return err
 	}
 	// delete this task
-	if err := model.DelTask(tx, taskID); errx.New(err) != nil {
+	if err := dao.DelTask(tx, taskID); errx.New(err) != nil {
 		return err
 	}
 	return nil
@@ -151,7 +152,7 @@ func DelFullTask(tx *gorm.DB, taskID int) error {
 func AddTag(tx *gorm.DB, tagContent, tagDesc string) (model.Tag, error) {
 	resultTag := model.Tag{Content: tagContent, Desc: tagDesc}
 	// Add new tag
-	err := model.AddTag(tx, &resultTag)
+	err := dao.AddTag(tx, &resultTag)
 	if errx.New(err) != nil {
 		return resultTag, err
 	}
@@ -162,11 +163,11 @@ func AddTag(tx *gorm.DB, tagContent, tagDesc string) (model.Tag, error) {
 // TagID: ID of Tag
 func DelTag(tx *gorm.DB, tagID int) error {
 	// delete this tag for all task with it
-	if err := model.DelTagOfAllTasks(tx, tagID); errx.New(err) != nil {
+	if err := dao.DelTagOfAllTasks(tx, tagID); errx.New(err) != nil {
 		return err
 	}
 	// delete this tag
-	if err := model.DelTag(tx, tagID); errx.New(err) != nil {
+	if err := dao.DelTag(tx, tagID); errx.New(err) != nil {
 		return err
 	}
 	return nil

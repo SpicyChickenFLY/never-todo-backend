@@ -17,14 +17,15 @@ func CreateGormConn(
 	userName, userPwd,
 	serverHost, serverPort,
 	dbName, dbCharset string) error {
-	GormDB, err := gorm.Open(
+	var err error
+	GormDB, err = gorm.Open(
 		driverName,
 		fmt.Sprintf(
 			"%s:%s@tcp(%s:%s)/%s?charset=%s",
 			userName, userPwd,
 			serverHost, serverPort,
 			dbName, dbCharset))
-	defer GormDB.Close()
+	// defer GormDB.Close()
 	if errx.New(err) != nil {
 		return err
 	}
