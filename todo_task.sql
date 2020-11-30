@@ -12,8 +12,8 @@ DROP TABLE IF EXISTS `tasks`;
 CREATE TABLE `tasks` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `content` varchar(100) DEFAULT '',
-  `createTime` datetime NOT NULL DEFAULT now(),
-  `updateTime` datetime NOT NULL DEFAULT now(),
+  `create_time` datetime NOT NULL DEFAULT now(),
+  `update_time` datetime NOT NULL DEFAULT now(),
   `status` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

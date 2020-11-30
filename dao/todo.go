@@ -64,7 +64,7 @@ func DelTask(tx *gorm.DB, taskID int) error {
 // UpdTask is a func to update Task
 func UpdTask(tx *gorm.DB, task *model.Task) error {
 	log.Printf("UpdTask(task: %v) \n", task)
-	task.UpdatedAt = gorm.NowFunc()
+	// task.UpdateTime = gorm.NowFunc()
 	return errx.New(tx.Save(&task).Error)
 }
 

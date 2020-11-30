@@ -6,11 +6,11 @@ import "time"
 
 // Task is a model for todo_task
 type Task struct {
-	ID        int    `gorm:"PRIMARY_KEY;AUTO_INCREMENT"`
-	Content   string `gorm:"NOT NULL"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	Status    bool `gorm:"NOT NULL"`
+	ID         int       `gorm:"PRIMARY_KEY;AUTO_INCREMENT"`
+	Content    string    `gorm:"NOT NULL"`
+	CreateTime time.Time `gorm:"NOT NULL"`
+	UpdateTime time.Time `gorm:"NOT NULL"`
+	Status     bool      `gorm:"NOT NULL"`
 }
 
 // Tasks is a slice of Task

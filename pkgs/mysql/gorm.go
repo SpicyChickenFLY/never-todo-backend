@@ -21,7 +21,7 @@ func CreateGormConn(
 	GormDB, err = gorm.Open(
 		driverName,
 		fmt.Sprintf(
-			"%s:%s@tcp(%s:%s)/%s?charset=%s",
+			"%s:%s@tcp(%s:%s)/%s?charset=%s&parseTime=true",
 			userName, userPwd,
 			serverHost, serverPort,
 			dbName, dbCharset))
