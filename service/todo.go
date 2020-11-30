@@ -87,7 +87,8 @@ func GetFullTasksByTag(
 }
 
 // AddFullTask is a func to add full task
-// fullTask: the json object of fullTask(Task, Tags)
+// taskContent:
+// tagsID:
 // return: Task(ID, Content, CreateTime, UpdateTime, Status), error
 func AddFullTask(tx *gorm.DB, taskContent string, tagsID []int) (model.Task, error) {
 	resultTask := model.Task{Content: taskContent}
@@ -108,12 +109,8 @@ func AddFullTask(tx *gorm.DB, taskContent string, tagsID []int) (model.Task, err
 	if errx.New(err) != nil {
 		return resultTask, err
 	}
-	// get new task ID
-	taskID := resultTask.ID
-	if err != nil {
-		return resultTask, errx.New(err)
-	}
 	// add new task-tag
+	taskID := resultTask.ID
 	for _, tagID := range tagsID {
 		if err := dao.AddTagForTask(
 			tx, int(taskID), tagID); err != nil {
@@ -121,6 +118,33 @@ func AddFullTask(tx *gorm.DB, taskContent string, tagsID []int) (model.Task, err
 		}
 	}
 	return resultTask, nil
+}
+
+// UpdFullTask is a func to add full task
+// task(ID, Content, CreateTime, UpdateTime, Status):
+// tagsID:
+// return: Task(ID, Content, CreateTime, UpdateTime, Status), error
+func UpdFullTask(tx *gorm.DB, task *model.Task, tagsID []int) error {
+	// delete old tags
+	if err := dao.DelAllTagsOfTask(tx, task.ID); err != nil {
+		return errx.New(err)
+	}
+	// insert new tags
+	for _, tagID := range tagsID {
+		ok, err := dao.IsExistTagID(tx, tagID)
+		if err != nil {
+			return errx.New(err)
+		}
+		if !ok {
+			err := errors.New("target TagID is not exist")
+			return errx.New(err)
+		}
+		if err := dao.AddTagForTask(tx, task.ID, tagID); err != nil {
+			return errx.New(err)
+		}
+	}
+	// update old task
+	return errx.New(dao.UpdTask(tx, task))
 }
 
 // DelFullTask is a func to add full task

@@ -15,7 +15,7 @@ import (
 func GetAllTasks(tx *gorm.DB, tasks *model.Tasks) error {
 	log.Println("GetAllTasks")
 	result := tx.Find(&tasks)
-	defer result.Close()
+	// defer result.Close()
 	return errx.New(result.Error)
 }
 
@@ -23,7 +23,7 @@ func GetAllTasks(tx *gorm.DB, tasks *model.Tasks) error {
 func GetTaskByID(tx *gorm.DB, tasks *model.Tasks, taskID int) error {
 	log.Printf("GetTaskByID(TaskID: %d)\n", taskID)
 	result := tx.Where(&model.Task{ID: taskID}).First(&tasks)
-	defer result.Close()
+	// defer result.Close()
 	return errx.New(result.Error)
 }
 
@@ -61,13 +61,20 @@ func DelTask(tx *gorm.DB, taskID int) error {
 	return errx.New(tx.Delete(&task).Error)
 }
 
+// UpdTask is a func to update Task
+func UpdTask(tx *gorm.DB, task *model.Task) error {
+	log.Printf("UpdTask(task: %v) \n", task)
+	task.UpdatedAt = gorm.NowFunc()
+	return errx.New(tx.Save(&task).Error)
+}
+
 // ==================== Tag ====================
 
 // GetAllTags is a func to get all Tags
 func GetAllTags(tx *gorm.DB, tags *model.Tags) error {
 	log.Println("GetTagByID")
 	result := tx.Find(&tags)
-	defer result.Close()
+	// defer result.Close()
 	return errx.New(result.Error)
 }
 
@@ -75,7 +82,7 @@ func GetAllTags(tx *gorm.DB, tags *model.Tags) error {
 func GetTagByID(tx *gorm.DB, tags *model.Tags, tagID int) error {
 	log.Printf("GetTagByID(TagID: %d)\n", tagID)
 	result := tx.Where(&model.Tag{ID: tagID}).First(&tags)
-	defer result.Close()
+	// defer result.Close()
 	return errx.New(result.Error)
 }
 
@@ -119,7 +126,7 @@ func DelTag(tx *gorm.DB, tagID int) error {
 func GetAllTaskTags(tx *gorm.DB, taskTags *model.TaskTags) error {
 	log.Println("GetAllTaskTags")
 	result := tx.Find(&taskTags)
-	defer result.Close()
+	// defer result.Close()
 	return errx.New(result.Error)
 }
 
@@ -128,7 +135,7 @@ func GetTaskTagsByTaskID(
 	tx *gorm.DB, taskTags *model.TaskTags, taskID int) error {
 	log.Printf("GetTaskTagsByTaskID(TaskID: %d)\n", taskID)
 	result := tx.Where(&model.TaskTag{TaskID: taskID}).Find(&taskTags)
-	defer result.Close()
+	// defer result.Close()
 	return errx.New(result.Error)
 }
 
@@ -137,7 +144,7 @@ func GetTaskTagsByTagID(
 	tx *gorm.DB, taskTags *model.TaskTags, tagID int) error {
 	log.Printf("GetTaskTagsByTagID(TagID: %d)\n", tagID)
 	result := tx.Where(&model.TaskTag{TagID: tagID}).Find(&taskTags)
-	defer result.Close()
+	// defer result.Close()
 	return errx.New(result.Error)
 }
 
@@ -177,7 +184,7 @@ func GetTagsByTaskID(tx *gorm.DB, tags *model.Tags, taskID int) error {
 	result := tx.Joins(
 		"LEFT JOIN task_tags ON tags.id=task_tags.tag_id").Where(
 		&model.TaskTag{TaskID: taskID}).Find(&tags)
-	defer result.Close()
+	// defer result.Close()
 	return errx.New(result.Error)
 }
 
@@ -187,6 +194,6 @@ func GetTasksByTagID(tx *gorm.DB, tasks *model.Tasks, tagID int) error {
 	result := tx.Joins(
 		"LEFT JOIN task_tags ON tasks.id=task_tags.task_id").Where(
 		&model.TaskTag{TagID: tagID}).Find(&tasks)
-	defer result.Close()
+	// defer result.Close()
 	return errx.New(result.Error)
 }

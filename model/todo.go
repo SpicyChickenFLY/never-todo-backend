@@ -1,14 +1,16 @@
 package model
 
+import "time"
+
 // ==================== Task ====================
 
 // Task is a model for todo_task
 type Task struct {
-	ID         int    `gorm:"PRIMARY_KEY;AUTO_INCREMENT"`
-	Content    string `gorm:"NOT NULL"`
-	CreateTime string `gorm:"NOT NULL"`
-	UpdateTime string `gorm:"NOT NULL"`
-	Status     bool   `gorm:"NOT NULL"`
+	ID        int    `gorm:"PRIMARY_KEY;AUTO_INCREMENT"`
+	Content   string `gorm:"NOT NULL"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	Status    bool `gorm:"NOT NULL"`
 }
 
 // Tasks is a slice of Task

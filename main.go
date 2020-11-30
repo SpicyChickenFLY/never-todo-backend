@@ -126,5 +126,6 @@ func main() {
 	case <-ctx.Done():
 		log.Println("timeout of 1 seconds.")
 	}
+	mysql.CloseGormConn()
 	log.Println("Server exiting")
 }

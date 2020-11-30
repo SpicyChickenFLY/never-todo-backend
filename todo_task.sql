@@ -34,23 +34,9 @@ CREATE TABLE `task_tags` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-/* 以下是测试数据插入样板， 请仿照样板设计数据 */
-/*
-INSERT INTO `tasks`(`content`) VALUES ('task_1');
-INSERT INTO `tasks`(`content`) VALUES ('task_2');
-INSERT INTO `tasks`(`content`) VALUES ('task_3');
+-- ALTER TABLE `task_tags` ADD FOREIGN KEY (`task_id`) REFERENCES `tasks`(`id`);
+-- ALTER TABLE `task_tags` ADD FOREIGN KEY (`tag_id`) REFERENCES `tags`(`id`);
 
-INSERT INTO `tags`(`content`, `description`) VALUES ('tag_1', 'desc_1');
-INSERT INTO `tags`(`content`, `description`) VALUES ('tag_2', 'desc_2');
-INSERT INTO `tags`(`content`, `description`) VALUES ('tag_3', 'desc_3');
-
-INSERT INTO `task_tags`(`task_id`, `tag_id`) VALUES (1, 2);
-INSERT INTO `task_tags`(`task_id`, `tag_id`) VALUES (1, 3);
-INSERT INTO `task_tags`(`task_id`, `tag_id`) VALUES (2, 1);
-INSERT INTO `task_tags`(`task_id`, `tag_id`) VALUES (2, 3);
-INSERT INTO `task_tags`(`task_id`, `tag_id`) VALUES (3, 1);
-INSERT INTO `task_tags`(`task_id`, `tag_id`) VALUES (3, 2);
-*/
 INSERT INTO `tasks`(`content`) VALUES ('记得换内裤');
 INSERT INTO `tasks`(`content`) VALUES ('做广播体操');
 INSERT INTO `tasks`(`content`) VALUES ('一边换内裤一边做广播体操');

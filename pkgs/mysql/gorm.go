@@ -36,5 +36,17 @@ func CreateGormConn(
 // CloseGormConn is a func to close connection pool
 func CloseGormConn() {
 	GormDB.Close()
+}
 
+func StopTransaction(tx *gorm.DB, err error) error {
+	if err != nil {
+		if err := tx.Rollback().Error; err != nil {
+			return errx.New(err)
+		}
+		return errx.New(err)
+	}
+	if err := tx.Commit().Error; err != nil {
+		return errx.New(err)
+	}
+	return nil
 }
