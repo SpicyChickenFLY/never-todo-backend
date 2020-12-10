@@ -19,13 +19,13 @@ import (
 )
 
 const ( // MYSQL CONFIG
-	MYSQL_DRIVER_NAME = "mysql"
-	MYSQL_SERVER_HOST = "localhost"
-	MYSQL_SERVER_PORT = "3306"
-	MYSQL_USER_NAME   = "root"
-	MYSQL_USER_PWD    = "123"
-	MYSQL_DB_NAME     = "never_todo"
-	MYSQL_DB_CHARSET  = "utf8"
+	mysqlDriverName      = "mysql"
+	mysqlServerHost      = "localhost"
+	mysqlServerPort      = "3306"
+	mysqlUserName        = "root"
+	mysqlUserPwd         = "123"
+	mysqlDatabaseName    = "never_todo"
+	mysqlDatabaseCharset = "utf8"
 )
 
 const ( // GIN CONFIG
@@ -38,15 +38,15 @@ func main() {
 	fmt.Printf("Please enter password for mysql user root@localhost: ")
 	fmt.Scanln(&userPwd)
 	if userPwd == "" {
-		userPwd = MYSQL_USER_PWD
+		userPwd = mysqlUserPwd
 	}
 
 	// Initialize MySQL connection
 	mysql.CreateGormConn(
-		MYSQL_DRIVER_NAME,
-		MYSQL_USER_NAME, userPwd,
-		MYSQL_SERVER_HOST, MYSQL_SERVER_PORT,
-		MYSQL_DB_NAME, MYSQL_DB_CHARSET)
+		mysqlDriverName,
+		mysqlUserName, userPwd,
+		mysqlServerHost, mysqlServerPort,
+		mysqlDatabaseName, MYSQL_DB_CHARSET)
 
 	router := gin.Default()
 	router.Use(middleware.Cors())

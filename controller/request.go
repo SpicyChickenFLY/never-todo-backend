@@ -48,6 +48,19 @@ func SimDelTask(c *gin.Context) {
 	c.String(http.StatusOK, response)
 }
 
+// SimUpdTask simulate to post Task update request and data
+func SimUpdTask(c *gin.Context) {
+	task := map[string]interface{}{
+		"TaskID":      5,
+		"TaskContent": "扔掉 MacBook 然后再买一份 MacDonald",
+		"TagsID":      []int{2, 3, 5},
+	}
+	response := request.Post(
+		"http://localhost:8080/todo/task/upd",
+		task, "application/json")
+	c.String(http.StatusOK, response)
+}
+
 // SimAddTag simulate to post tag add request and data
 func SimAddTag(c *gin.Context) {
 	tag := map[string]interface{}{
