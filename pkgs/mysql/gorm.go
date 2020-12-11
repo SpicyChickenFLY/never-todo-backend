@@ -38,6 +38,7 @@ func CloseGormConn() {
 	GormDB.Close()
 }
 
+// StopTransaction is a func to decide rollback or commit
 func StopTransaction(tx *gorm.DB, err error) error {
 	if err != nil {
 		if err := tx.Rollback().Error; err != nil {
