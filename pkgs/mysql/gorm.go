@@ -5,7 +5,7 @@ import (
 	"log"
 
 	"github.com/jinzhu/gorm"
-	"spicychicken.top/NeverTODO/backend/pkgs/errx"
+	"github.com/lingdor/stackerror"
 )
 
 // GormDB is a connection pool of database
@@ -26,8 +26,8 @@ func CreateGormConn(
 			serverHost, serverPort,
 			dbName, dbCharset))
 	// defer GormDB.Close()
-	if errx.New(err) != nil {
-		return err
+	if err != nil {
+		return stackerror.New(err.Error())
 	}
 	log.Println("success to connect database")
 	return nil
@@ -42,12 +42,12 @@ func CloseGormConn() {
 func StopTransaction(tx *gorm.DB, err error) error {
 	if err != nil {
 		if err := tx.Rollback().Error; err != nil {
-			return errx.New(err)
+			return stackerror.New(err.Error())
 		}
-		return errx.New(err)
+		return err
 	}
 	if err := tx.Commit().Error; err != nil {
-		return errx.New(err)
+		return err
 	}
 	return nil
 }

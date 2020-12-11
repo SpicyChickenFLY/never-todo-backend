@@ -8,7 +8,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"spicychicken.top/NeverTODO/backend/model"
-	"spicychicken.top/NeverTODO/backend/pkgs/errx"
 	"spicychicken.top/NeverTODO/backend/pkgs/mysql"
 	"spicychicken.top/NeverTODO/backend/service"
 )

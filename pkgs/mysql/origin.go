@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	"spicychicken.top/NeverTODO/backend/pkgs/errx"
+	"github.com/lingdor/stackerror"
 )
 
 const (
@@ -84,12 +84,12 @@ func CreateOriginConn(
 			userName, userPwd,
 			serverHost, serverPort,
 			dbName, dbCharset))
-	if errx.New(err) != nil {
-		return err
+	if err != nil {
+		return stackerror.New(err.Error())
 	}
 	log.Println("success to connect database")
-	if err := OriginDB.Ping(); errx.New(err) != nil {
-		return err
+	if err := OriginDB.Ping(); err != nil {
+		return stackerror.New(err.Error())
 	}
 	return nil
 }
