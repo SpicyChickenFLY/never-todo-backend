@@ -53,7 +53,7 @@ func AddTask(tx *gorm.DB, task *model.Task) error {
 	if err := tx.Create(&task).Error; err != nil {
 		return stackerror.New(err.Error())
 	}
-	if tx.NewRecord(task) { // errx.Newss
+	if tx.NewRecord(task) {
 		return stackerror.New(
 			"failed to add task by content")
 	}
@@ -125,7 +125,7 @@ func AddTag(tx *gorm.DB, tag *model.Tag) error {
 	if err := tx.Create(&tag).Error; err != nil {
 		return stackerror.New(err.Error())
 	}
-	if tx.NewRecord(tag) { // errx.Newss
+	if tx.NewRecord(tag) {
 		return stackerror.New(
 			"failed to add tag by content")
 	}

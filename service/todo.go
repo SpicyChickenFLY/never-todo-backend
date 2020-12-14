@@ -1,13 +1,12 @@
 package service
 
 import (
-	"errors"
 	"log"
 
 	"github.com/jinzhu/gorm"
+	"github.com/lingdor/stackerror"
 	"spicychicken.top/NeverTODO/backend/dao"
 	"spicychicken.top/NeverTODO/backend/model"
-	"spicychicken.top/NeverTODO/backend/pkgs/errx"
 )
 
 // GetAllTables is a func to get all tables
@@ -18,15 +17,15 @@ func GetAllTables(tx *gorm.DB) (
 	var taskTags model.TaskTags
 	// retrieve all tasks
 	if err := dao.GetAllTasks(tx, &tasks); err != nil {
-		return tasks, tags, taskTags, errx.New(err)
+		return tasks, tags, taskTags, err
 	}
 	// retrieve all tags
 	if err := dao.GetAllTags(tx, &tags); err != nil {
-		return tasks, tags, taskTags, errx.New(err)
+		return tasks, tags, taskTags, err
 	}
 	// retrieve all tags
 	if err := dao.GetAllTaskTags(tx, &taskTags); err != nil {
-		return tasks, tags, taskTags, errx.New(err)
+		return tasks, tags, taskTags, err
 	}
 	return tasks, tags, taskTags, nil
 }
@@ -45,7 +44,7 @@ func GetFullTasks(tx *gorm.DB, fullTasks *FullTasks) error {
 	// retrieve all tasks
 	var tasks model.Tasks
 	if err := dao.GetAllTasks(tx, &tasks); err != nil {
-		return errx.New(err)
+		return err
 	}
 	// retrieve tags for each task
 	for i := 0; i < len(tasks); i++ {
@@ -67,14 +66,14 @@ func GetFullTasksByTag(
 	// retrieve all tasks
 	var tasks model.Tasks
 	if err := dao.GetTasksByTagID(tx, &tasks, tagID); err != nil {
-		return errx.New(err)
+		return err
 	}
 	// retrieve tags for each task
 	for i := 0; i < len(tasks); i++ {
 		var tags model.Tags
 		if err := dao.GetTagsByTaskID(
 			tx, &tags, tasks[i].ID); err != nil {
-			return errx.New(err)
+			return err
 		}
 		*fullTasks = append(*fullTasks,
 			FullTask{
@@ -96,17 +95,17 @@ func AddFullTask(tx *gorm.DB, taskContent string, tagsID []int) (model.Task, err
 	for _, tagID := range tagsID {
 		ok, err := dao.IsExistTagID(tx, tagID)
 		if err != nil {
-			return resultTask, errx.New(err)
+			return resultTask, err
 		}
 		if !ok {
-			err := errors.New("target TagID is not exist")
-			return resultTask, errx.New(err)
+			return resultTask, stackerror.New(
+				"target TagID is not exist")
 		}
 	}
 	// add new task
 	err := dao.AddTask(
 		tx, &resultTask)
-	if errx.New(err) != nil {
+	if err != nil {
 		return resultTask, err
 	}
 	// add new task-tag
@@ -114,7 +113,7 @@ func AddFullTask(tx *gorm.DB, taskContent string, tagsID []int) (model.Task, err
 	for _, tagID := range tagsID {
 		if err := dao.AddTagForTask(
 			tx, int(taskID), tagID); err != nil {
-			return resultTask, errx.New(err)
+			return resultTask, err
 		}
 	}
 	return resultTask, nil
@@ -127,47 +126,43 @@ func AddFullTask(tx *gorm.DB, taskContent string, tagsID []int) (model.Task, err
 func UpdFullTask(tx *gorm.DB, task *model.Task, tagsID []int) error {
 	// delete old tags
 	if err := dao.DelAllTagsOfTask(tx, task.ID); err != nil {
-		return errx.New(err)
+		return err
 	}
 	// insert new tags
 	for _, tagID := range tagsID {
 		ok, err := dao.IsExistTagID(tx, tagID)
 		if err != nil {
-			return errx.New(err)
+			return err
 		}
 		if !ok {
-			err := errors.New("target TagID is not exist")
-			return errx.New(err)
+			return stackerror.New(
+				"target TagID is not exist")
 		}
 		if err := dao.AddTagForTask(tx, task.ID, tagID); err != nil {
-			return errx.New(err)
+			return err
 		}
 	}
 	// update old task
-	return errx.New(dao.UpdTask(tx, task))
+	return dao.UpdTask(tx, task)
 }
 
 // DelFullTask is a func to add full task
 // TaskID: ID of Task
 func DelFullTask(tx *gorm.DB, taskID int) error {
-	// errx if task exists
 	ok, err := dao.IsExistTaskID(tx, taskID)
-	if errx.New(err) != nil {
+	if err != nil {
 		return err
 	}
 	if !ok {
-		err := errors.New("target TaskID is not exist")
-		return errx.New(err)
+		return stackerror.New(
+			"target TaskID is not exist")
 	}
 	// delete all tags for this task
-	if err := dao.DelAllTagsOfTask(tx, taskID); errx.New(err) != nil {
+	if err := dao.DelAllTagsOfTask(tx, taskID); err != nil {
 		return err
 	}
 	// delete this task
-	if err := dao.DelTask(tx, taskID); errx.New(err) != nil {
-		return err
-	}
-	return nil
+	return dao.DelTask(tx, taskID)
 }
 
 // AddTag is a func to add new tag
@@ -177,7 +172,7 @@ func AddTag(tx *gorm.DB, tagContent, tagDesc string) (model.Tag, error) {
 	resultTag := model.Tag{Content: tagContent, Desc: tagDesc}
 	// Add new tag
 	err := dao.AddTag(tx, &resultTag)
-	if errx.New(err) != nil {
+	if err != nil {
 		return resultTag, err
 	}
 	return resultTag, nil
@@ -187,12 +182,9 @@ func AddTag(tx *gorm.DB, tagContent, tagDesc string) (model.Tag, error) {
 // TagID: ID of Tag
 func DelTag(tx *gorm.DB, tagID int) error {
 	// delete this tag for all task with it
-	if err := dao.DelTagOfAllTasks(tx, tagID); errx.New(err) != nil {
+	if err := dao.DelTagOfAllTasks(tx, tagID); err != nil {
 		return err
 	}
 	// delete this tag
-	if err := dao.DelTag(tx, tagID); errx.New(err) != nil {
-		return err
-	}
-	return nil
+	return dao.DelTag(tx, tagID)
 }

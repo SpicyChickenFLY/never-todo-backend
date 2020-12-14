@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/lingdor/stackerror"
 	"spicychicken.top/NeverTODO/backend/model"
 	"spicychicken.top/NeverTODO/backend/pkgs/mysql"
 	"spicychicken.top/NeverTODO/backend/service"
@@ -60,8 +61,8 @@ func GetTaskListByTag(c *gin.Context) {
 		return
 	}
 	tagID, err := strconv.Atoi(tagIDStr)
-	if errx.New(err) != nil {
-		return
+	if err != nil {
+		return stackerror.New(err.Error())
 	}
 	tx := mysql.GormDB.Begin()
 	var fullTasks service.FullTasks
@@ -70,7 +71,7 @@ func GetTaskListByTag(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError,
 			gin.H{"status": -1, "fullTasks": fullTasks})
-		log.Print(err)
+		log.Println(err)
 	} else {
 		c.JSON(http.StatusOK,
 			gin.H{"status": 0, "fullTasks": fullTasks})
@@ -92,7 +93,7 @@ func AddNewTask(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError,
 			gin.H{"status": -1, "task": task})
-		log.Print(err)
+		log.Println(err)
 	} else {
 		c.JSON(http.StatusOK,
 			gin.H{"status": 0, "task": task})
@@ -106,8 +107,8 @@ func DelOldTask(c *gin.Context) {
 	}{}
 	c.BindJSON(&data)
 	if data.TaskID == 0 {
-		err := errors.New("no TaskID in data field in post request")
-		errx.New(err)
+		err := stackerror.New("no TaskID in data field in post request")
+		log.Println(err)
 		c.JSON(http.StatusInternalServerError,
 			gin.H{"status": -1})
 		return
@@ -178,7 +179,7 @@ func DelOldTag(c *gin.Context) {
 	log.Printf("receive post request: %v", data)
 	if data.TagID == 0 {
 		err := errors.New("no TagID in data field in post request")
-		errx.New(err)
+		log.Println(err)
 		c.JSON(http.StatusInternalServerError,
 			gin.H{"status": -1})
 		return

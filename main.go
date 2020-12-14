@@ -46,7 +46,7 @@ func main() {
 		mysqlDriverName,
 		mysqlUserName, userPwd,
 		mysqlServerHost, mysqlServerPort,
-		mysqlDatabaseName, MYSQL_DB_CHARSET)
+		mysqlDatabaseName, mysqlDatabaseCharset)
 
 	router := gin.Default()
 	router.Use(middleware.Cors())
