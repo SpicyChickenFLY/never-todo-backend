@@ -55,6 +55,7 @@ func GetTaskList(c *gin.Context) {
 
 // GetTaskListByTag is a func to
 func GetTaskListByTag(c *gin.Context) {
+	var fullTasks service.FullTasks
 	tagIDStr := c.Query("tag_id")
 	if tagIDStr == "" {
 		GetTaskList(c)
@@ -62,10 +63,13 @@ func GetTaskListByTag(c *gin.Context) {
 	}
 	tagID, err := strconv.Atoi(tagIDStr)
 	if err != nil {
-		return stackerror.New(err.Error())
+		stackerror.New(err.Error())
+		log.Println(err)
+		c.JSON(http.StatusInternalServerError,
+			gin.H{"status": -1, "fullTasks": fullTasks})
+		log.Println(err)
 	}
 	tx := mysql.GormDB.Begin()
-	var fullTasks service.FullTasks
 	err = service.GetFullTasksByTag(tx, &fullTasks, tagID)
 	err = mysql.StopTransaction(tx, err)
 	if err != nil {
@@ -130,21 +134,26 @@ func DelOldTask(c *gin.Context) {
 // UpdOldTask is a func to update Task
 func UpdOldTask(c *gin.Context) {
 	data := &struct {
-		Task   model.Task
-		TagsID []int
+		TaskID      int
+		TaskContent string
+		TagsID      []int
 	}{}
 	c.BindJSON(&data)
+	task := model.Task{
+		ID:      data.TaskID,
+		Content: data.TaskContent,
+	}
 	log.Printf("receive post request: %v", data)
 	tx := mysql.GormDB.Begin()
-	err := service.UpdFullTask(tx, &data.Task, data.TagsID)
+	err := service.UpdFullTask(tx, &task, data.TagsID)
 	err = mysql.StopTransaction(tx, err)
 	if err != nil {
 		c.JSON(http.StatusOK,
-			gin.H{"status": -1, "Task": data.Task})
+			gin.H{"status": -1, "Task": task})
 		log.Print(err)
 	} else {
 		c.JSON(http.StatusOK,
-			gin.H{"status": 0, "Task": data.Task})
+			gin.H{"status": 0, "Task": task})
 	}
 }
 
@@ -194,5 +203,32 @@ func DelOldTag(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusOK,
 			gin.H{"status": 0})
+	}
+}
+
+// UpdOldTag is a func to update Tag
+func UpdOldTag(c *gin.Context) {
+	data := &struct {
+		TagID      int
+		TagContent string
+		TagDesc    string
+	}{}
+	c.BindJSON(&data)
+	tag := model.Tag{
+		ID:      data.TagID,
+		Content: data.TagContent,
+		Desc:    data.TagDesc,
+	}
+	log.Printf("receive post request: %v", data)
+	tx := mysql.GormDB.Begin()
+	err := service.UpdTag(tx, &tag)
+	err = mysql.StopTransaction(tx, err)
+	if err != nil {
+		c.JSON(http.StatusOK,
+			gin.H{"status": -1, "Tag": tag})
+		log.Print(err)
+	} else {
+		c.JSON(http.StatusOK,
+			gin.H{"status": 0, "Tag": tag})
 	}
 }

@@ -143,7 +143,15 @@ func UpdFullTask(tx *gorm.DB, task *model.Task, tagsID []int) error {
 		}
 	}
 	// update old task
-	return dao.UpdTask(tx, task)
+	if err := dao.UpdTask(tx, task); err != nil {
+		return err
+	}
+	var tasks model.Tasks
+	if err := dao.GetTaskByID(tx, &tasks, task.ID); err != nil {
+		return err
+	}
+	task = &tasks[0]
+	return nil
 }
 
 // DelFullTask is a func to add full task
@@ -187,4 +195,9 @@ func DelTag(tx *gorm.DB, tagID int) error {
 	}
 	// delete this tag
 	return dao.DelTag(tx, tagID)
+}
+
+// UpdTag is a func to update old tag
+func UpdTag(tx *gorm.DB, tag *model.Tag) error {
+	return dao.UpdTag(tx, tag)
 }

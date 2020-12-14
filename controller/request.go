@@ -84,3 +84,16 @@ func SimDelTag(c *gin.Context) {
 		tagID, "application/json")
 	c.String(http.StatusOK, response)
 }
+
+// SimUpdTag simulate to post Task update request and data
+func SimUpdTag(c *gin.Context) {
+	task := map[string]interface{}{
+		"TaskID":     4,
+		"TagContent": "叽里呱啦叽里呱啦",
+		"TagDesc":    "只是凑数用的(改)。",
+	}
+	response := request.Post(
+		"http://localhost:8080/todo/tag/upd",
+		task, "application/json")
+	c.String(http.StatusOK, response)
+}
