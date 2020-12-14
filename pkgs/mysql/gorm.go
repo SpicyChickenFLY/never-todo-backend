@@ -21,12 +21,13 @@ func CreateGormConn(
 	GormDB, err = gorm.Open(
 		driverName,
 		fmt.Sprintf(
-			"%s:%s@tcp(%s:%s)/%s?charset=%s&parseTime=true",
+			"%s:%s@tcp(%s:%s)/%s?charset=%s&parseTime=true&loc=Local",
 			userName, userPwd,
 			serverHost, serverPort,
 			dbName, dbCharset))
 	// defer GormDB.Close()
 	if err != nil {
+		log.Println("failed to connect database")
 		return stackerror.New(err.Error())
 	}
 	log.Println("success to connect database")

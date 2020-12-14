@@ -61,11 +61,13 @@ func main() {
 		{
 			groupTask.POST("/add", controller.AddNewTask)
 			groupTask.POST("/del", controller.DelOldTask)
+			groupTask.POST("/upd", controller.UpdOldTask)
 		}
 		groupTag := groupTodo.Group("/tag")
 		{
 			groupTag.POST("/add", controller.AddNewTag)
 			groupTag.POST("/del", controller.DelOldTag)
+			groupTag.POST("/upd", controller.UpdOldTag)
 		}
 		groupTaskList := groupTodo.Group("/tasklist")
 		{
@@ -84,11 +86,13 @@ func main() {
 			{
 				groupSimTask.GET("/add", controller.SimAddTask)
 				groupSimTask.GET("/del", controller.SimDelTask)
+				groupSimTask.GET("/upd", controller.SimUpdTask)
 			}
 			groupSimTag := groupSim.Group("/tag")
 			{
 				groupSimTag.GET("/add", controller.SimAddTag)
 				groupSimTag.GET("/del", controller.SimDelTag)
+				groupSimTag.GET("/upd", controller.SimUpdTag)
 			}
 		}
 	}

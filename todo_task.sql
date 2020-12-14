@@ -21,17 +21,16 @@ CREATE TABLE `tasks` (
 DROP TABLE IF EXISTS `tags`; 
 CREATE TABLE `tags` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `content` varchar(10) DEFAULT '',
-  `desc` varchar(20) DEFAULT '',
+  `content` varchar(20) DEFAULT '',
+  `desc` varchar(50) DEFAULT '',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `task_tags`; 
 CREATE TABLE `task_tags` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `task_id` int(10) NOT NULL,
   `tag_id` int(10) NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`task_id`, `tag_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ALTER TABLE `task_tags` ADD FOREIGN KEY (`task_id`) REFERENCES `tasks`(`id`);
