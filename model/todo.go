@@ -17,9 +17,6 @@ type Task struct {
 	Status     bool      `gorm:"NOT NULL"`
 }
 
-// AfterCreate 回调函数
-func (task *Task) AfterCreate(scope *gorm.Scope) {}
-
 // BeforeCreate 回调函数
 func (task *Task) BeforeCreate(scope *gorm.Scope) {
 	if !scope.HasError() {
@@ -37,21 +34,12 @@ func (task *Task) BeforeCreate(scope *gorm.Scope) {
 	}
 }
 
-// AfterSave 回调函数
-func (task *Task) AfterSave(scope *gorm.Scope) {}
-
-// BeforeSave 回调函数
-func (task *Task) BeforeSave(scope *gorm.Scope) {}
-
 // BeforeUpdate 回调函数
 func (task *Task) BeforeUpdate(scope *gorm.Scope) {
 	if _, ok := scope.Get("gorm:update_column"); !ok {
 		scope.SetColumn("UpdateTime", gorm.NowFunc())
 	}
 }
-
-// AfterUpdate 回调函数
-func (task *Task) AfterUpdate(scope *gorm.Scope) {}
 
 // Tasks is a slice of Task
 type Tasks []Task
