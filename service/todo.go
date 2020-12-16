@@ -30,17 +30,8 @@ func GetAllTables(tx *gorm.DB) (
 	return tasks, tags, taskTags, nil
 }
 
-// FullTask is a model of task list
-type FullTask struct {
-	Task model.Task
-	Tags model.Tags
-}
-
-// FullTasks is a slice of FullTask
-type FullTasks []FullTask
-
 // GetFullTasks is a func to get all FullTask
-func GetFullTasks(tx *gorm.DB, fullTasks *FullTasks) error {
+func GetFullTasks(tx *gorm.DB, fullTasks *model.FullTasks) error {
 	// retrieve all tasks
 	var tasks model.Tasks
 	if err := dao.GetAllTasks(tx, &tasks); err != nil {
@@ -51,7 +42,7 @@ func GetFullTasks(tx *gorm.DB, fullTasks *FullTasks) error {
 		var tags model.Tags
 		dao.GetTagsByTaskID(tx, &tags, tasks[i].ID)
 		*fullTasks = append(*fullTasks,
-			FullTask{
+			model.FullTask{
 				Task: tasks[i],
 				Tags: tags,
 			})
@@ -61,7 +52,7 @@ func GetFullTasks(tx *gorm.DB, fullTasks *FullTasks) error {
 
 // GetFullTasksByTag is a func to get FullTask by TagID
 func GetFullTasksByTag(
-	tx *gorm.DB, fullTasks *FullTasks, tagID int) error {
+	tx *gorm.DB, fullTasks *model.FullTasks, tagID int) error {
 	log.Printf("GetFullTaskByTag(tagID: %d)\n", tagID)
 	// retrieve all tasks
 	var tasks model.Tasks
@@ -76,7 +67,7 @@ func GetFullTasksByTag(
 			return err
 		}
 		*fullTasks = append(*fullTasks,
-			FullTask{
+			model.FullTask{
 				Task: tasks[i],
 				Tags: tags,
 			},

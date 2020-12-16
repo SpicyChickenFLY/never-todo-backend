@@ -40,7 +40,7 @@ func GetAll(c *gin.Context) {
 // GetTaskList is a func to
 func GetTaskList(c *gin.Context) {
 	tx := mysql.GormDB.Begin()
-	var fullTasks service.FullTasks
+	var fullTasks model.FullTasks
 	err := service.GetFullTasks(tx, &fullTasks)
 	err = mysql.StopTransaction(tx, err)
 	if err != nil {
@@ -55,7 +55,7 @@ func GetTaskList(c *gin.Context) {
 
 // GetTaskListByTag is a func to
 func GetTaskListByTag(c *gin.Context) {
-	var fullTasks service.FullTasks
+	var fullTasks model.FullTasks
 	tagIDStr := c.Query("tag_id")
 	if tagIDStr == "" {
 		GetTaskList(c)

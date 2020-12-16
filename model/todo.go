@@ -66,3 +66,14 @@ type TaskTag struct {
 
 // TaskTags is a slice of TaskTag
 type TaskTags []TaskTag
+
+// ==================== FullTask ====================
+
+// FullTask is a model of task list
+type FullTask struct {
+	Task Task
+	Tags Tags
+}
+
+// FullTasks is a slice of FullTask
+type FullTasks []FullTask
