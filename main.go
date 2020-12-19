@@ -57,6 +57,7 @@ func main() {
 	groupTodo := router.Group("/todo")
 	{
 		groupTodo.GET("/all", controller.GetAll)
+		groupTodo.POST("/all", controller.GetAll)
 		groupTask := groupTodo.Group("/task")
 		{
 			groupTask.POST("/add", controller.AddNewTask)
@@ -72,14 +73,16 @@ func main() {
 		groupTaskList := groupTodo.Group("/tasklist")
 		{
 			groupTaskList.GET("/all", controller.GetTaskList)
+			groupTaskList.POST("/all", controller.GetTaskList)
 			groupTaskList.GET("/tag", controller.GetTaskListByTag)
+			groupTaskList.POST("/tag", controller.GetTaskListByTag)
 		}
 
 	}
 	groupRequest := router.Group("/request")
 	{
 		groupRequest.GET("/ui", controller.ShowUI)
-		groupRequest.GET("/send", controller.SendRequest)
+		// groupRequest.GET("/send", controller.SendRequest)
 		groupSim := groupRequest.Group("/sim")
 		{
 			groupSimTask := groupSim.Group("/task")

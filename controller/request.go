@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"html/template"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -9,12 +10,10 @@ import (
 
 // ShowUI is a func for user to custom their request
 func ShowUI(c *gin.Context) {
-	c.HTML(http.StatusOK, "", gin.H{})
-}
 
-// SendRequest is a func to send http request by user
-func SendRequest(c *gin.Context) {
-
+	c.HTML(http.StatusOK, "ui.tmpl", gin.H{
+		"title": template.HTML("NeverTODO"),
+	})
 }
 
 // SimAddTask simulate to post task add request and data

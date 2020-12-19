@@ -34,6 +34,11 @@ func CreateGormConn(
 	return nil
 }
 
+// CloseGormConn close connection pool to mysql with gorm
+func CloseGormConn() error {
+	return GormDB.Close()
+}
+
 // StopTransaction is a func to decide rollback or commit
 func StopTransaction(tx *gorm.DB, err error) error {
 	if err != nil {
