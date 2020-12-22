@@ -56,26 +56,28 @@ func main() {
 	// Group: Todo List
 	groupTodo := router.Group("/todo")
 	{
-		groupTodo.GET("/all", controller.GetAll)
 		groupTodo.POST("/all", controller.GetAll)
 		groupTask := groupTodo.Group("/task")
 		{
-			groupTask.POST("/add", controller.AddNewTask)
-			groupTask.POST("/del", controller.DelOldTask)
-			groupTask.POST("/upd", controller.UpdOldTask)
+			groupTask.POST("/all", controller.GetAllTask)
+			// groupTask.POST("/add", controller.AddNewTask)
+			// groupTask.POST("/del", controller.DelOldTask)
+			// groupTask.POST("/upd", controller.UpdOldTask)
 		}
 		groupTag := groupTodo.Group("/tag")
 		{
+			groupTag.POST("/all", controller.GetAllTag)
 			groupTag.POST("/add", controller.AddNewTag)
 			groupTag.POST("/del", controller.DelOldTag)
 			groupTag.POST("/upd", controller.UpdOldTag)
 		}
-		groupTaskList := groupTodo.Group("/tasklist")
+		groupFullTask := groupTodo.Group("/fulltask")
 		{
-			groupTaskList.GET("/all", controller.GetTaskList)
-			groupTaskList.POST("/all", controller.GetTaskList)
-			groupTaskList.GET("/tag", controller.GetTaskListByTag)
-			groupTaskList.POST("/tag", controller.GetTaskListByTag)
+			groupFullTask.POST("/all", controller.GetAllFullTask)
+			groupFullTask.POST("/tag", controller.GetFullTaskByTag)
+			groupFullTask.POST("/add", controller.AddNewFullTask)
+			groupFullTask.POST("/del", controller.DelOldFullTask)
+			groupFullTask.POST("/upd", controller.UpdOldFullTask)
 		}
 
 	}
@@ -109,7 +111,7 @@ func main() {
 		// service connections
 		err := server.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {
-			fmt.Println("server encount error while listen and serve")
+			fmt.Println("server encount error while listen and serve:", err)
 		}
 	}()
 

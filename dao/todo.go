@@ -14,7 +14,7 @@ import (
 // GetAllTasks is a func to get all Tasks
 func GetAllTasks(tx *gorm.DB, tasks *model.Tasks) error {
 	log.Println("GetAllTasks")
-	result := tx.Find(&tasks)
+	result := tx.Find(tasks)
 	// defer result.Close()
 	if err := result.Error; err != nil {
 		return stackerror.New(err.Error())

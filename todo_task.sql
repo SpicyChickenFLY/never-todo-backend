@@ -33,14 +33,15 @@ CREATE TABLE `task_tags` (
   PRIMARY KEY (`task_id`, `tag_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `account` varchar(100) NOT NULL,
   `password` varchar(100) NOT NULL,
   `nick` varchar(100) NOT NULL,
-  `create_time` varchar(100) NOT NULL
-  
-)
+  `create_time` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ALTER TABLE `task_tags` ADD FOREIGN KEY (`task_id`) REFERENCES `tasks`(`id`);
 -- ALTER TABLE `task_tags` ADD FOREIGN KEY (`tag_id`) REFERENCES `tags`(`id`);

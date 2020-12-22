@@ -10,27 +10,24 @@ import (
 )
 
 // GetAllTables is a func to get all tables
-func GetAllTables(tx *gorm.DB) (
-	model.Tasks, model.Tags, model.TaskTags, error) {
-	var tasks model.Tasks
-	var tags model.Tags
-	var taskTags model.TaskTags
+func GetAllTables(
+	tx *gorm.DB,
+	tasks *model.Tasks,
+	tags *model.Tags,
+	taskTags *model.TaskTags) error {
 	// retrieve all tasks
-	if err := dao.GetAllTasks(tx, &tasks); err != nil {
-		return tasks, tags, taskTags, err
+	if err := dao.GetAllTasks(tx, tasks); err != nil {
+		return err
 	}
 	// retrieve all tags
-	if err := dao.GetAllTags(tx, &tags); err != nil {
-		return tasks, tags, taskTags, err
+	if err := dao.GetAllTags(tx, tags); err != nil {
+		return err
 	}
 	// retrieve all tags
-	if err := dao.GetAllTaskTags(tx, &taskTags); err != nil {
-		return tasks, tags, taskTags, err
-	}
-	return tasks, tags, taskTags, nil
+	return dao.GetAllTaskTags(tx, taskTags)
 }
 
-// GetFullTasks is a func to get all FullTask
+// GetFullTasks is a func to get all FullTasks
 func GetFullTasks(tx *gorm.DB, fullTasks *model.FullTasks) error {
 	// retrieve all tasks
 	var tasks model.Tasks
@@ -80,34 +77,34 @@ func GetFullTasksByTag(
 // taskContent:
 // tagsID:
 // return: Task(ID, Content, CreateTime, UpdateTime, Status), error
-func AddFullTask(tx *gorm.DB, taskContent string, tagsID []int) (model.Task, error) {
-	resultTask := model.Task{Content: taskContent}
+func AddFullTask(tx *gorm.DB, task *model.Task, tagsID []int) error {
+
 	// check tags exists
 	for _, tagID := range tagsID {
 		ok, err := dao.IsExistTagID(tx, tagID)
 		if err != nil {
-			return resultTask, err
+			return err
 		}
 		if !ok {
-			return resultTask, stackerror.New(
+			return stackerror.New(
 				"target TagID is not exist")
 		}
 	}
 	// add new task
 	err := dao.AddTask(
-		tx, &resultTask)
+		tx, task)
 	if err != nil {
-		return resultTask, err
+		return err
 	}
 	// add new task-tag
-	taskID := resultTask.ID
+	taskID := task.ID
 	for _, tagID := range tagsID {
 		if err := dao.AddTagForTask(
 			tx, int(taskID), tagID); err != nil {
-			return resultTask, err
+			return err
 		}
 	}
-	return resultTask, nil
+	return nil
 }
 
 // UpdFullTask is a func to add full task
@@ -164,17 +161,24 @@ func DelFullTask(tx *gorm.DB, taskID int) error {
 	return dao.DelTask(tx, taskID)
 }
 
+// GetAllTasks is a func to get all Tasks
+func GetAllTasks(tx *gorm.DB, tasks *model.Tasks) error {
+	// retrieve all tasks
+	return dao.GetAllTasks(tx, tasks)
+}
+
+// GetAllTags is a func to get all tags
+func GetAllTags(tx *gorm.DB, tags *model.Tags) error {
+	// retrieve all tags
+	return dao.GetAllTags(tx, tags)
+}
+
 // AddTag is a func to add new tag
 // tag: Tag(ID, Content, Desc)
 // return: Tag(ID, Content, Desc), error
-func AddTag(tx *gorm.DB, tagContent, tagDesc string) (model.Tag, error) {
-	resultTag := model.Tag{Content: tagContent, Desc: tagDesc}
+func AddTag(tx *gorm.DB, tag model.Tag) error {
 	// Add new tag
-	err := dao.AddTag(tx, &resultTag)
-	if err != nil {
-		return resultTag, err
-	}
-	return resultTag, nil
+	return dao.AddTag(tx, &tag)
 }
 
 // DelTag is a func to delete old tag
