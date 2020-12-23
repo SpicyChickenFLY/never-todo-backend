@@ -1,4 +1,4 @@
-function updateTasks() {
+function getFullTasks() {
     $.ajax({
         type: "POST",
         url: "/todo/fulltask/all",
@@ -46,7 +46,7 @@ function addFulltask() {
         dataType: "json",
         success: function(data, textStatus) {
             alert(JSON.stringify(data));
-            updateTasks();
+            getFullTasks();
         },
         error: function (XMLHttpRequest, textStatus, errThrown) {
             alert("Request Error [addTask]");
@@ -67,8 +67,8 @@ function delFulltask() {
         data: dataStr,
         dataType: "json",
         success: function(data, textStatus) {
-            alert(JSON.stringify(data))
-            updateTasks();
+            alert(JSON.stringify(data));
+            getFullTasks();
         },
         error: function (XMLHttpRequest, textStatus, errThrown) {
             alert("Request Error [delTask]");
@@ -79,7 +79,7 @@ function delFulltask() {
 function updFulltask() {
     var dataStr = 
         '{"TaskID":' +
-        $("button.full-task.upd").siblings("input.task.id").val()
+        $("button.full-task.upd").siblings("input.task.id").val() +
         ', "TaskContent":"' + 
         $("button.full-task.upd").siblings("input.task.content").val() + 
         '", "TagsID":[' + 
@@ -93,7 +93,8 @@ function updFulltask() {
         data: dataStr,
         dataType: "json",
         success: function(data, textStatus) {
-            alert(JSON.stringify(data))
+            alert(JSON.stringify(data));
+            getFullTasks();
         },
         error: function (XMLHttpRequest, textStatus, errThrown) {
             alert("Request Error [UpdateTask]");
@@ -117,7 +118,7 @@ function addTag() {
         dataType: "json",
         success: function(data, textStatus) {
             alert(JSON.stringify(data));
-            updateTags();
+            getTags();
         },
         error: function (XMLHttpRequest, textStatus, errThrown) {
             alert("Request Error [addTag]");
@@ -138,8 +139,8 @@ function delTag() {
         data: dataStr,
         dataType: "json",
         success: function(data, textStatus) {
-            alert(JSON.stringify(data))
-            updateTags();
+            alert(JSON.stringify(data));
+            getTags();
         },
         error: function (XMLHttpRequest, textStatus, errThrown) {
             alert("Request Error [delTag]");
@@ -150,10 +151,10 @@ function delTag() {
 function updTag() {
     var dataStr = 
         '{"TagID":' +
-        $("button.tag.upd").siblings("input.tag.id").val()
-        ', "TaskContent":"' + 
+        $("button.tag.upd").siblings("input.tag.id").val() +
+        ', "TagContent":"' + 
         $("button.tag.upd").siblings("input.tag.content").val() + 
-        '", "TagsID":"' + 
+        '", "TagDesc":"' + 
         $("button.tag.upd").siblings("input.tag.desc").val() + '"}';
     alert("post:" + dataStr);
 
@@ -164,8 +165,8 @@ function updTag() {
         data: dataStr,
         dataType: "json",
         success: function(data, textStatus) {
-            alert(JSON.stringify(data))
-            updateTags();
+            alert(JSON.stringify(data));
+            getTags();
         },
         error: function (XMLHttpRequest, textStatus, errThrown) {
             alert("Request Error [UpdateTag]");
@@ -174,14 +175,14 @@ function updTag() {
 }
 
 $(document).ready(function () {
-    updateTasks();
+    getFullTasks();
     getTags();
 
     $("button.full-task.add").click(addFulltask);
     $("button.full-task.del").click(delFulltask);
     $("button.full-task.upd").click(updFulltask);
 
-    $("button.tag.add").click();
-    $("button.tag.del").click();
-    $("button.tag.upd").click();
+    $("button.tag.add").click(addTag);
+    $("button.tag.del").click(delTag);
+    $("button.tag.upd").click(updTag);
 });
