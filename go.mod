@@ -1,4 +1,4 @@
-module spicychicken.top/NeverTODO/backend
+module github.com/SpicyChickenFLY/NeverTODO/backend
 
 go 1.15
 

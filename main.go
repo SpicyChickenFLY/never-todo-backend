@@ -10,10 +10,10 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/SpicyChickenFLY/NeverTODO/backend/controller"
+	"github.com/SpicyChickenFLY/NeverTODO/backend/pkgs/middleware"
+	"github.com/SpicyChickenFLY/NeverTODO/backend/pkgs/mysql"
 	"github.com/gin-gonic/gin"
-	"spicychicken.top/NeverTODO/backend/controller"
-	"spicychicken.top/NeverTODO/backend/pkgs/middleware"
-	"spicychicken.top/NeverTODO/backend/pkgs/mysql"
 
 	_ "github.com/go-sql-driver/mysql"
 )
