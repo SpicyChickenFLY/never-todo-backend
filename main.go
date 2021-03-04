@@ -57,50 +57,24 @@ func main() {
 	groupTodo := router.Group("/todo")
 	{
 		groupTodo.POST("/all", controller.GetAll)
-		groupTask := groupTodo.Group("/task")
-		{
-			groupTask.POST("/all", controller.GetAllTask)
-			// groupTask.POST("/add", controller.AddNewTask)
-			// groupTask.POST("/del", controller.DelOldTask)
-			// groupTask.POST("/upd", controller.UpdOldTask)
-		}
 		groupTag := groupTodo.Group("/tag")
 		{
-			groupTag.POST("/all", controller.GetAllTag)
-			groupTag.POST("/add", controller.AddNewTag)
-			groupTag.POST("/del", controller.DelOldTag)
-			groupTag.POST("/upd", controller.UpdOldTag)
+			groupTag.GET("all", controller.GetAllTag)
+			groupTag.POST("", controller.AddNewTag)
+			groupTag.DELETE(":id", controller.DelOldTag)
+			groupTag.PUT(":id", controller.UpdOldTag)
 		}
 		groupFullTask := groupTodo.Group("/fulltask")
 		{
-			groupFullTask.POST("/all", controller.GetAllFullTask)
-			groupFullTask.POST("/tag", controller.GetFullTaskByTag)
-			groupFullTask.POST("/add", controller.AddNewFullTask)
-			groupFullTask.POST("/del", controller.DelOldFullTask)
-			groupFullTask.POST("/upd", controller.UpdOldFullTask)
+			groupFullTask.GET("", controller.GetAllFullTask)
+			groupFullTask.GET(":tagID", controller.GetFullTaskByTag)
+			groupFullTask.POST("", controller.AddNewFullTask)
+			groupFullTask.DELETE(":id", controller.DelOldFullTask)
+			groupFullTask.PUT(":id", controller.UpdOldFullTask)
 		}
 
 	}
-	groupRequest := router.Group("/request")
-	{
-		groupRequest.GET("/ui", controller.ShowUI)
-		// groupRequest.GET("/send", controller.SendRequest)
-		groupSim := groupRequest.Group("/sim")
-		{
-			groupSimTask := groupSim.Group("/task")
-			{
-				groupSimTask.GET("/add", controller.SimAddTask)
-				groupSimTask.GET("/del", controller.SimDelTask)
-				groupSimTask.GET("/upd", controller.SimUpdTask)
-			}
-			groupSimTag := groupSim.Group("/tag")
-			{
-				groupSimTag.GET("/add", controller.SimAddTag)
-				groupSimTag.GET("/del", controller.SimDelTag)
-				groupSimTag.GET("/upd", controller.SimUpdTag)
-			}
-		}
-	}
+	router.GET("", controller.ShowUI)
 
 	server := &http.Server{
 		Addr:    GIN_PORT,

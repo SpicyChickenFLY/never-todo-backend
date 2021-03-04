@@ -1,0 +1,8 @@
+客户端Client和服务端Server都维护一个最后更新时间（LastUpdateTime，LUT）
+C.LUT来自于S.LUT 因此 C.LUT <= S.LUT
+
+定时器触发时，判断C.LUT & S.LUT：
+    if C.LUT == S.LUT 没有新修改
+    if C.LUT < S.LUT 有新修改，上传C.UT>S.LUT的数据，并查询修改S.UT>C.LUT语句
+
+本地修改标识为True时

@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ .title }}</title>
 </head>
+
 <body>
     <h1>Nerver TODO</h1>
     <div class="row">
@@ -25,13 +27,17 @@
                 <input type="text" class="full-task task content" placeholder="Task Content">
                 <input type="text" class="full-task tag id" placeholder="Tag IDs">
                 <br>
-                <button class="full-task upd">更新任务</button>
+                <button class="full-task upd">修改任务</button>
             </div>
             <div>
                 <input type="text" class="full-task task rtr" placeholder="Task Content">
                 <br>
                 <button class="full-task rtr acc">精确查询</button>
                 <button class="full-task rtr ran">模糊查询</button>
+            </div>
+            <br>
+            <div>
+                <button class="full-task all">手动更新任务数据</button>
             </div>
             <pre></pre>
         </div>
@@ -54,11 +60,16 @@
                 <br>
                 <button class="tag upd">修改标签</button>
             </div>
+            <br>
+            <div>
+                <button class="tag all">手动更新标签数据</button>
+            </div>
             <pre></pre>
         </div>
     </div>
-    
+
 </body>
+
 </html>
 
 <script src="/static/js/jquery-1.10.2.js"></script>

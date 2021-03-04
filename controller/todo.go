@@ -200,6 +200,10 @@ func GetAllTag(c *gin.Context) {
 	}
 }
 
+func GetTagByID(c *gin.Context) {
+	c.Request.Header.Get("Authorithon")
+}
+
 // AddNewTag is a func to add Tag
 func AddNewTag(c *gin.Context) {
 	data := &struct {

@@ -14,6 +14,7 @@ CREATE TABLE `tasks` (
   `content` varchar(100) DEFAULT '',
   `create_time` datetime NOT NULL DEFAULT now(),
   `update_time` datetime NOT NULL DEFAULT now(),
+  `importance` int(10) NOT NULL DEFAULT 1,
   `status` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -23,6 +24,7 @@ CREATE TABLE `tags` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `content` varchar(20) DEFAULT '',
   `desc` varchar(50) DEFAULT '',
+  `color` varchar(10) DEFAULT '#AAAAAA',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

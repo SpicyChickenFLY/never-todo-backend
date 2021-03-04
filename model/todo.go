@@ -14,7 +14,8 @@ type Task struct {
 	Content    string    `gorm:"NOT NULL"`
 	CreateTime time.Time `gorm:"default:null"`
 	UpdateTime time.Time `gorm:"default:null"`
-	Status     bool      `gorm:"NOT NULL"`
+	Importance int
+	Status     bool `gorm:"NOT NULL"`
 }
 
 // BeforeCreate 回调函数
@@ -51,6 +52,7 @@ type Tag struct {
 	ID      int    `gorm:"PRIMARY_KEY;AUTO_INCREMENT"`
 	Content string `gorm:"NOT NULL"`
 	Desc    string `gorm:"NOT NULL"`
+	Color   string `gorm:"NOT NULL"`
 }
 
 // Tags is a slice of Tag
