@@ -10,5 +10,6 @@ type User struct {
 	Name          string    `gorm:"NOT NULL"`
 	CreateTime    time.Time `gorm:"default:null"`
 	LastLoginTime time.Time `gorm:"default:null"`
-	Status        bool      `gorm:"NOT NULL"`
+	Status        bool      `gorm:"default:false"`
+	DeleteFlag    bool      `gorm:"default:false"`
 }
