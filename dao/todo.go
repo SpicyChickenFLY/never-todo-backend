@@ -15,7 +15,7 @@ import (
 // GetAllTasks is a func to get all Tasks
 func GetAllTasks(tx *gorm.DB, tasks *model.Tasks) error {
 	log.Println("GetAllTasks")
-	result := tx.Find(tasks)
+	result := tx.Where(&model.Task{Deleted: false}).Find(tasks)
 	// defer result.Close()
 	if err := result.Error; err != nil {
 		return stackerror.New(err.Error())
@@ -26,7 +26,7 @@ func GetAllTasks(tx *gorm.DB, tasks *model.Tasks) error {
 // GetTaskByID is a func to get Tasks by ID
 func GetTaskByID(tx *gorm.DB, tasks *model.Tasks, taskID int) error {
 	log.Printf("GetTaskByID(TaskID: %d)\n", taskID)
-	result := tx.Where(&model.Task{ID: taskID}).First(&tasks)
+	result := tx.Where(&model.Task{ID: taskID, Deleted: false}).First(&tasks)
 	// defer result.Close()
 	if err := result.Error; err != nil {
 		return stackerror.New(err.Error())
