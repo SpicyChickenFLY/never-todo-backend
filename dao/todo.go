@@ -3,10 +3,11 @@ package dao
 import (
 	"errors"
 	"log"
+	"time"
 
-	"github.com/SpicyChickenFLY/NeverTODO/backend/model"
-	"github.com/jinzhu/gorm"
+	"github.com/SpicyChickenFLY/never-todo-backend/model"
 	"github.com/lingdor/stackerror"
+	"gorm.io/gorm"
 )
 
 // ==================== Task ====================
@@ -50,10 +51,12 @@ func IsExistTaskID(tx *gorm.DB, taskID int) (bool, error) {
 // AddTask is a func to add Task
 func AddTask(tx *gorm.DB, task *model.Task) error {
 	log.Printf("AddTask(task: %v\n)", task)
+	task.CreatedAt = time.Now()
+	task.UpdatedAt = time.Now()
 	if err := tx.Create(&task).Error; err != nil {
 		return stackerror.New(err.Error())
 	}
-	if tx.NewRecord(task) {
+	if err := tx.Create(task).Error; err != nil {
 		return stackerror.New(
 			"failed to add task by content")
 	}
@@ -63,7 +66,7 @@ func AddTask(tx *gorm.DB, task *model.Task) error {
 // DelTask is a func to delete Task
 func DelTask(tx *gorm.DB, taskID int) error {
 	log.Printf("DelTask(taskID: %d) \n", taskID)
-	task := model.Task{ID: taskID}
+	task := model.Task{ID: taskID, Deleted: true}
 	if err := tx.Delete(&task).Error; err != nil {
 		return stackerror.New(err.Error())
 	}
@@ -73,7 +76,7 @@ func DelTask(tx *gorm.DB, taskID int) error {
 // UpdTask is a func to update Task
 func UpdTask(tx *gorm.DB, task *model.Task) error {
 	log.Printf("UpdTask(task: %v) \n", task)
-	// task.UpdateTime = gorm.NowFunc()
+	task.UpdatedAt = time.Now()
 	if err := tx.Model(task).Where(
 		"id=?", task.ID).Update(
 		"content", task.Content).Error; err != nil {
@@ -124,10 +127,12 @@ func IsExistTagID(tx *gorm.DB, tagID int) (bool, error) {
 // AddTag is a func to add Tag
 func AddTag(tx *gorm.DB, tag *model.Tag) error {
 	log.Printf("AddTag(tag:%v\n)", tag)
+	tag.CreatedAt = time.Now()
+	tag.UpdatedAt = time.Now()
 	if err := tx.Create(&tag).Error; err != nil {
 		return stackerror.New(err.Error())
 	}
-	if tx.NewRecord(tag) {
+	if err := tx.Create(tag).Error; err != nil {
 		return stackerror.New(
 			"failed to add tag by content")
 	}
@@ -147,6 +152,7 @@ func DelTag(tx *gorm.DB, tagID int) error {
 // UpdTag is a func to update Tag
 func UpdTag(tx *gorm.DB, tag *model.Tag) error {
 	log.Printf("UpdTag(tag: %v) \n", tag)
+	tag.UpdatedAt = time.Now()
 	if err := tx.Save(tag).Error; err != nil {
 		return stackerror.New(err.Error())
 	}
@@ -197,7 +203,7 @@ func AddTagForTask(tx *gorm.DB, taskID, tagID int) error {
 	if err := tx.Create(&taskTag).Error; err != nil {
 		return stackerror.New(err.Error())
 	}
-	if tx.NewRecord(taskTag) {
+	if err := tx.Create(taskTag).Error; err != nil {
 		err := errors.New("failed to add tag by content")
 		return stackerror.New(err.Error())
 	}
@@ -232,8 +238,7 @@ func DelTagOfAllTasks(tx *gorm.DB, tagID int) error {
 func GetTagsByTaskID(tx *gorm.DB, tags *model.Tags, taskID int) error {
 	log.Printf("GetTagsByTaskID(taskID: %d) \n", taskID)
 	result := tx.Joins(
-		"LEFT JOIN task_tags ON tags.id=task_tags.tag_id").Where(
-		&model.TaskTag{TaskID: taskID}).Find(&tags)
+		"LEFT JOIN task_tags ON tags.id=task_tags.tag_id AND task_tags.task_id = ?", taskID).Find(&tags)
 	// defer result.Close()
 	if err := result.Error; err != nil {
 		return stackerror.New(err.Error())
@@ -245,8 +250,7 @@ func GetTagsByTaskID(tx *gorm.DB, tags *model.Tags, taskID int) error {
 func GetTasksByTagID(tx *gorm.DB, tasks *model.Tasks, tagID int) error {
 	log.Printf("GetTagsByTaskID(tagID: %d) \n", tagID)
 	result := tx.Joins(
-		"LEFT JOIN task_tags ON tasks.id=task_tags.task_id").Where(
-		&model.TaskTag{TagID: tagID}).Find(&tasks)
+		"LEFT JOIN task_tags ON tasks.id=task_tags.task_id AND task_tags.tag_id = ?", tagID).Find(&tasks)
 	// defer result.Close()
 	if err := result.Error; err != nil {
 		return stackerror.New(err.Error())

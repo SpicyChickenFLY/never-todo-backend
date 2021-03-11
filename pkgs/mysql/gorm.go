@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/jinzhu/gorm"
 	"github.com/lingdor/stackerror"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 // GormDB is a connection pool of database
@@ -13,30 +14,23 @@ var GormDB *gorm.DB
 
 // CreateGormConn create connection pool to mysql with gorm
 func CreateGormConn(
-	driverName,
 	userName, userPwd,
 	serverHost, serverPort,
 	dbName, dbCharset string) error {
 	var err error
-	GormDB, err = gorm.Open(
-		driverName,
+
+	GormDB, err = gorm.Open(mysql.Open(
 		fmt.Sprintf(
 			"%s:%s@tcp(%s:%s)/%s?charset=%s&parseTime=true&loc=Local",
 			userName, userPwd,
 			serverHost, serverPort,
-			dbName, dbCharset))
-	// defer GormDB.Close()
+			dbName, dbCharset)), &gorm.Config{})
 	if err != nil {
 		log.Println("failed to connect database")
 		return stackerror.New(err.Error())
 	}
 	log.Println("success to connect database")
 	return nil
-}
-
-// CloseGormConn close connection pool to mysql with gorm
-func CloseGormConn() error {
-	return GormDB.Close()
 }
 
 // CheckTransaction is a func to decide rollback or commit

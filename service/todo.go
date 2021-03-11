@@ -3,10 +3,10 @@ package service
 import (
 	"log"
 
-	"github.com/SpicyChickenFLY/NeverTODO/backend/dao"
-	"github.com/SpicyChickenFLY/NeverTODO/backend/model"
-	"github.com/jinzhu/gorm"
+	"github.com/SpicyChickenFLY/never-todo-backend/dao"
+	"github.com/SpicyChickenFLY/never-todo-backend/model"
 	"github.com/lingdor/stackerror"
+	"gorm.io/gorm"
 )
 
 // GetAllTables is a func to get all tables

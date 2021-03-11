@@ -10,10 +10,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/SpicyChickenFLY/NeverTODO/backend/controller"
-	"github.com/SpicyChickenFLY/NeverTODO/backend/pkgs/middleware"
-	"github.com/SpicyChickenFLY/NeverTODO/backend/pkgs/mysql"
-	"github.com/gin-gonic/gin"
+	"github.com/SpicyChickenFLY/never-todo-backend/pkgs/mysql"
+	"github.com/SpicyChickenFLY/never-todo-backend/route"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -29,7 +27,7 @@ const ( // MYSQL CONFIG
 )
 
 const ( // GIN CONFIG
-	GIN_PORT = ":8080"
+	port = ":8080"
 )
 
 func main() {
@@ -43,42 +41,13 @@ func main() {
 
 	// Initialize MySQL connection
 	mysql.CreateGormConn(
-		mysqlDriverName,
 		mysqlUserName, userPwd,
 		mysqlServerHost, mysqlServerPort,
 		mysqlDatabaseName, mysqlDatabaseCharset)
 
-	router := gin.Default()
-	router.Use(middleware.Cors())
-	router.LoadHTMLGlob("templates/*")
-	router.Static("/static", "./static")
-
-	// Group: Todo List
-	groupTodo := router.Group("/todo")
-	{
-		groupTodo.POST("/all", controller.GetAll)
-		groupTag := groupTodo.Group("/tag")
-		{
-			groupTag.GET("all", controller.GetAllTag)
-			groupTag.POST("", controller.AddNewTag)
-			groupTag.DELETE(":id", controller.DelOldTag)
-			groupTag.PUT(":id", controller.UpdOldTag)
-		}
-		groupFullTask := groupTodo.Group("/fulltask")
-		{
-			groupFullTask.GET("", controller.GetAllFullTask)
-			groupFullTask.GET(":tagID", controller.GetFullTaskByTag)
-			groupFullTask.POST("", controller.AddNewFullTask)
-			groupFullTask.DELETE(":id", controller.DelOldFullTask)
-			groupFullTask.PUT(":id", controller.UpdOldFullTask)
-		}
-
-	}
-	router.GET("", controller.ShowUI)
-
 	server := &http.Server{
-		Addr:    GIN_PORT,
-		Handler: router,
+		Addr:    port,
+		Handler: route.InitRouter(),
 	}
 
 	go func() {
@@ -109,6 +78,5 @@ func main() {
 	case <-ctx.Done():
 		log.Println("timeout of 1 seconds.")
 	}
-	mysql.CloseGormConn()
 	log.Println("Server exiting")
 }

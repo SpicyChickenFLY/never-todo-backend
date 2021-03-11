@@ -1,14 +1,13 @@
 package controller
 
 import (
-	"errors"
 	"log"
 	"net/http"
 	"strconv"
 
-	"github.com/SpicyChickenFLY/NeverTODO/backend/model"
-	"github.com/SpicyChickenFLY/NeverTODO/backend/pkgs/mysql"
-	"github.com/SpicyChickenFLY/NeverTODO/backend/service"
+	"github.com/SpicyChickenFLY/never-todo-backend/model"
+	"github.com/SpicyChickenFLY/never-todo-backend/pkgs/mysql"
+	"github.com/SpicyChickenFLY/never-todo-backend/service"
 	"github.com/gin-gonic/gin"
 	"github.com/lingdor/stackerror"
 )
@@ -59,12 +58,7 @@ func GetAllFullTask(c *gin.Context) {
 // GetFullTaskByTag is a func to
 func GetFullTaskByTag(c *gin.Context) {
 	var fullTasks model.FullTasks
-	tagIDStr := c.Query("tag_id")
-	if tagIDStr == "" {
-		GetAllFullTask(c)
-		return
-	}
-	tagID, err := strconv.Atoi(tagIDStr)
+	tagID, err := strconv.Atoi(c.Param("tagID"))
 	if err != nil {
 		stackerror.New(err.Error())
 		log.Println(err)
@@ -110,21 +104,16 @@ func AddNewFullTask(c *gin.Context) {
 
 // DelOldFullTask is a func to delete Task
 func DelOldFullTask(c *gin.Context) {
-	data := &struct {
-		TaskID int `json:"TaskID"`
-	}{}
-	c.BindJSON(&data)
-	// log.Println(data)
-	if data.TaskID == 0 {
-		err := stackerror.New("no TaskID in data field in post request")
+	taskID, err := strconv.Atoi(c.Param("taskID"))
+	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusInternalServerError,
 			gin.H{"Status": -1})
 		return
 	}
-	log.Printf("receive post request: %d", data.TaskID)
+	log.Printf("receive post request: %d", taskID)
 	tx := mysql.GormDB.Begin()
-	err := service.DelFullTask(tx, data.TaskID)
+	err = service.DelFullTask(tx, taskID)
 	err = mysql.CheckTransaction(tx, err)
 	if err != nil {
 		c.JSON(http.StatusOK,
@@ -200,10 +189,6 @@ func GetAllTag(c *gin.Context) {
 	}
 }
 
-func GetTagByID(c *gin.Context) {
-	c.Request.Header.Get("Authorithon")
-}
-
 // AddNewTag is a func to add Tag
 func AddNewTag(c *gin.Context) {
 	data := &struct {
@@ -228,20 +213,15 @@ func AddNewTag(c *gin.Context) {
 
 // DelOldTag is a func to add Tag
 func DelOldTag(c *gin.Context) {
-	data := &struct {
-		TagID int `json:"TagID"`
-	}{}
-	c.BindJSON(&data)
-	log.Printf("receive post request: %v", data)
-	if data.TagID == 0 {
-		err := errors.New("no TagID in data field in post request")
+	tagID, err := strconv.Atoi(c.Param("tagID"))
+	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusInternalServerError,
 			gin.H{"Status": -1})
 		return
 	}
 	tx := mysql.GormDB.Begin()
-	err := service.DelTag(tx, data.TagID)
+	err = service.DelTag(tx, tagID)
 	err = mysql.CheckTransaction(tx, err)
 	if err != nil {
 		c.JSON(http.StatusOK,

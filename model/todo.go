@@ -2,44 +2,18 @@ package model
 
 import (
 	"time"
-
-	"github.com/jinzhu/gorm"
 )
 
 // ==================== Task ====================
 
 // Task is a model for todo_task
 type Task struct {
-	ID         int       `gorm:"PRIMARY_KEY;AUTO_INCREMENT"`
-	Content    string    `gorm:"NOT NULL"`
-	CreateTime time.Time `gorm:"default:null"`
-	UpdateTime time.Time `gorm:"default:null"`
-	Importance int
-	Status     bool `gorm:"NOT NULL"`
-}
-
-// BeforeCreate 回调函数
-func (task *Task) BeforeCreate(scope *gorm.Scope) {
-	if !scope.HasError() {
-		now := gorm.NowFunc()
-		if createdAtField, ok := scope.FieldByName("CreateTime"); ok {
-			if createdAtField.IsBlank {
-				createdAtField.Set(now)
-			}
-		}
-		if updatedAtField, ok := scope.FieldByName("UpdateTime"); ok {
-			if updatedAtField.IsBlank {
-				updatedAtField.Set(now)
-			}
-		}
-	}
-}
-
-// BeforeUpdate 回调函数
-func (task *Task) BeforeUpdate(scope *gorm.Scope) {
-	if _, ok := scope.Get("gorm:update_column"); !ok {
-		scope.SetColumn("UpdateTime", gorm.NowFunc())
-	}
+	ID        int       `gorm:"PRIMARY_KEY;AUTO_INCREMENT"`
+	Content   string    `gorm:"NOT NULL"`
+	Status    bool      `gorm:"NOT NULL"`
+	CreatedAt time.Time `gorm:"NOT NULL;default now()"`
+	UpdatedAt time.Time `gorm:"NOT NULL;default now()"`
+	Deleted   bool      `gorm:"NOT NULL;default 0"`
 }
 
 // Tasks is a slice of Task
@@ -49,10 +23,12 @@ type Tasks []Task
 
 // Tag is a model for todo_tag
 type Tag struct {
-	ID      int    `gorm:"PRIMARY_KEY;AUTO_INCREMENT"`
-	Content string `gorm:"NOT NULL"`
-	Desc    string `gorm:"NOT NULL"`
-	Color   string `gorm:"NOT NULL"`
+	ID        int       `gorm:"PRIMARY_KEY;AUTO_INCREMENT"`
+	Content   string    `gorm:"NOT NULL"`
+	Desc      string    `gorm:"NOT NULL"`
+	CreatedAt time.Time `gorm:"NOT NULL;default now()"`
+	UpdatedAt time.Time `gorm:"NOT NULL;default now()"`
+	Deleted   bool      `gorm:"NOT NULL;default 0"`
 }
 
 // Tags is a slice of Tag

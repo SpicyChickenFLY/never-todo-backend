@@ -10,38 +10,42 @@ Target Server Type    : MYSQL
 
 DROP TABLE IF EXISTS `tasks`;
 CREATE TABLE `tasks` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `content` varchar(100) DEFAULT '',
-  `create_time` datetime NOT NULL DEFAULT now(),
-  `update_time` datetime NOT NULL DEFAULT now(),
-  `importance` int(10) NOT NULL DEFAULT 1,
+  `id` INT(11) unsigned NOT NULL AUTO_INCREMENT,
+  `content` VARCHAR(100) DEFAULT '',
+  `created_at` DATETIME NOT NULL DEFAULT now(),
+  `updated_at` DATETIME NOT NULL DEFAULT now(),
+  `deleted` TINYINT(1) NOT NULL DEFAULT 0,
   `status` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `tags`; 
 CREATE TABLE `tags` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `content` varchar(20) DEFAULT '',
-  `desc` varchar(50) DEFAULT '',
-  `color` varchar(10) DEFAULT '#AAAAAA',
+  `id` INT(11) unsigned NOT NULL AUTO_INCREMENT,
+  `content` VARCHAR(20) DEFAULT '',
+  `desc` VARCHAR(50) DEFAULT '',
+  `created_at` DATETIME NOT NULL DEFAULT now(),
+  `updated_at` DATETIME NOT NULL DEFAULT now(),
+  `deleted` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `task_tags`; 
 CREATE TABLE `task_tags` (
-  `task_id` int(10) NOT NULL,
-  `tag_id` int(10) NOT NULL,
+  `task_id` INT(11) NOT NULL,
+  `tag_id` INT(11) NOT NULL,
   PRIMARY KEY (`task_id`, `tag_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `user`;
-CREATE TABLE `user` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `account` varchar(100) NOT NULL,
-  `password` varchar(100) NOT NULL,
-  `nick` varchar(100) NOT NULL,
-  `create_time` varchar(100) NOT NULL,
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE `users` (
+  `id` INT(11) unsigned NOT NULL AUTO_INCREMENT,
+  `account` VARCHAR(100) NOT NULL,
+  `password` VARCHAR(100) NOT NULL,
+  `nick` VARCHAR(100) NOT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT now(),
+  `updated_at` DATETIME NOT NULL DEFAULT now(),
+  `deleted` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -66,7 +70,7 @@ INSERT INTO `task_tags`(`task_id`, `tag_id`) VALUES (3, 2);
 INSERT INTO `task_tags`(`task_id`, `tag_id`) VALUES (3, 3);
 INSERT INTO `task_tags`(`task_id`, `tag_id`) VALUES (3, 4);
 
-
-
+INSERT INTO `users`(`account`, `password`, `nick`) VALUES ('YuChao', md5('yc'), 'yc');
+INSERT INTO `users`(`account`, `password`, `nick`) VALUES ('ZhangHanyu', md5('zhy'), 'zhy');
 
 
