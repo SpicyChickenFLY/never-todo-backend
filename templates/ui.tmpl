@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ .title }}</title>
 </head>
+
 <body>
     <h1>Nerver TODO</h1>
     <div class="row">
@@ -39,6 +41,7 @@
             <div>
                 <input type="text" class="tag add content" placeholder="Tag Content">
                 <input type="text" class="tag add desc" placeholder="Tag Desc">
+                <input type="text" class="tag add color" placeholder="Tag Color">
                 <br>
                 <button class="tag add">新增标签</button>
             </div>
@@ -51,14 +54,16 @@
                 <input type="text" class="tag upd id" placeholder="Tag ID">
                 <input type="text" class="tag upd content" placeholder="Tag Content">
                 <input type="text" class="tag upd desc" placeholder="Tag Desc">
+                <input type="text" class="tag add color" placeholder="Tag Color">
                 <br>
                 <button class="tag upd">修改标签</button>
             </div>
             <pre></pre>
         </div>
     </div>
-    
+
 </body>
+
 </html>
 
 <script src="/static/js/jquery-1.10.2.js"></script>

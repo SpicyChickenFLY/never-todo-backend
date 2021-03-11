@@ -83,7 +83,7 @@ function updFulltask() {
 
     $.ajax({
         type: "PUT",
-        url: "/todo/fulltask/upd",
+        url: "/todo/fulltask",
         contentType: "application/json",
         data: dataStr,
         dataType: "json",
@@ -102,12 +102,14 @@ function addTag() {
         '{"TagContent":"' + 
         $("button.tag.add").siblings("input.tag.content").val() + 
         '", "TagDesc":"' + 
-        $("button.tag.add").siblings("input.tag.desc").val() + '"}';
+        $("button.tag.add").siblings("input.tag.desc").val() + 
+        '","TagColor":"' +
+        $("button.tag.add").siblings("input.tag.color").val() + '"}';
     alert("post:" + dataStr);
 
     $.ajax({
         type: "POST",
-        url: "/todo/tag/add",
+        url: "/todo/tag",
         contentType: "application/json",
         data: dataStr,
         dataType: "json",
@@ -123,7 +125,7 @@ function addTag() {
 
 function delTag() {
     let urlStr = 
-        "/todo/tag/del" + $("button.tag.del").siblings("input.tag.id").val() + '}';
+        "/todo/tag" + $("button.tag.del").siblings("input.tag.id").val();
 
     $.ajax({
         type: "DELETE",
@@ -146,12 +148,14 @@ function updTag() {
         ', "TagContent":"' + 
         $("button.tag.upd").siblings("input.tag.content").val() + 
         '", "TagDesc":"' + 
-        $("button.tag.upd").siblings("input.tag.desc").val() + '"}';
+        $("button.tag.upd").siblings("input.tag.desc").val() + 
+        '","TagColor":"' +
+        $("button.tag.add").siblings("input.tag.color").val() + '"}';
     alert("post:" + dataStr);
 
     $.ajax({
         type: "PUT",
-        url: "/todo/tag/upd",
+        url: "/todo/tag",
         contentType: "application/json",
         data: dataStr,
         dataType: "json",

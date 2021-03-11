@@ -24,6 +24,7 @@ CREATE TABLE `tags` (
   `id` INT(11) unsigned NOT NULL AUTO_INCREMENT,
   `content` VARCHAR(20) DEFAULT '',
   `desc` VARCHAR(50) DEFAULT '',
+  `color` VARCHAR(20) DEFAULT '#AAAAAA',
   `created_at` DATETIME NOT NULL DEFAULT now(),
   `updated_at` DATETIME NOT NULL DEFAULT now(),
   `deleted` TINYINT(1) NOT NULL DEFAULT 0,

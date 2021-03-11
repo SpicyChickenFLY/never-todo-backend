@@ -19,22 +19,22 @@ func InitRouter() *gin.Engine {
 		groupTodo.GET("/all", controller.GetAll)
 		groupTask := groupTodo.Group("/task")
 		{
-			groupTask.GET("", controller.GetAllTask)
+			groupTask.GET("/", controller.GetAllTask)
 		}
 		groupTag := groupTodo.Group("/tag")
 		{
-			groupTag.GET("", controller.GetAllTag)
-			groupTag.POST("", controller.AddNewTag)
-			groupTag.DELETE(":tagID", controller.DelOldTag)
-			groupTag.PUT("", controller.UpdOldTag)
+			groupTag.GET("/", controller.GetAllTag)
+			groupTag.POST("/", controller.AddNewTag)
+			groupTag.DELETE("/:tagID", controller.DelOldTag)
+			groupTag.PUT("/", controller.UpdOldTag)
 		}
 		groupFullTask := groupTodo.Group("/fulltask")
 		{
-			groupFullTask.GET("", controller.GetAllFullTask)
-			groupFullTask.GET(":tagID", controller.GetFullTaskByTag)
-			groupFullTask.POST("", controller.AddNewFullTask)
-			groupFullTask.DELETE(":taskID", controller.DelOldFullTask)
-			groupFullTask.PUT("", controller.UpdOldFullTask)
+			groupFullTask.GET("/", controller.GetAllFullTask)
+			groupFullTask.GET("/:tagID", controller.GetFullTaskByTag)
+			groupFullTask.POST("/", controller.AddNewFullTask)
+			groupFullTask.DELETE("/:taskID", controller.DelOldFullTask)
+			groupFullTask.PUT("/", controller.UpdOldFullTask)
 		}
 	}
 	router.GET("/", controller.ShowUI)

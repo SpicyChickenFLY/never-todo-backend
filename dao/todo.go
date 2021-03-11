@@ -56,18 +56,14 @@ func AddTask(tx *gorm.DB, task *model.Task) error {
 	if err := tx.Create(&task).Error; err != nil {
 		return stackerror.New(err.Error())
 	}
-	if err := tx.Create(task).Error; err != nil {
-		return stackerror.New(
-			"failed to add task by content")
-	}
 	return nil
 }
 
 // DelTask is a func to delete Task
 func DelTask(tx *gorm.DB, taskID int) error {
 	log.Printf("DelTask(taskID: %d) \n", taskID)
-	task := model.Task{ID: taskID, Deleted: true}
-	if err := tx.Delete(&task).Error; err != nil {
+	if err := tx.Model(&model.Task{}).Where(
+		"id=?", taskID).Update("deleted", true).Error; err != nil {
 		return stackerror.New(err.Error())
 	}
 	return nil
@@ -132,18 +128,14 @@ func AddTag(tx *gorm.DB, tag *model.Tag) error {
 	if err := tx.Create(&tag).Error; err != nil {
 		return stackerror.New(err.Error())
 	}
-	if err := tx.Create(tag).Error; err != nil {
-		return stackerror.New(
-			"failed to add tag by content")
-	}
 	return nil
 }
 
 // DelTag is a func to delete Tag
 func DelTag(tx *gorm.DB, tagID int) error {
 	log.Printf("DelTag(tagID: %d) \n", tagID)
-	tag := model.Tag{ID: tagID}
-	if err := tx.Delete(&tag).Error; err != nil {
+	if err := tx.Model(&model.Tag{}).Where(
+		"id=?", tagID).Update("deleted", true).Error; err != nil {
 		return stackerror.New(err.Error())
 	}
 	return nil
