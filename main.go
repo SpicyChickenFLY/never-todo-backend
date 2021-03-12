@@ -120,5 +120,6 @@ func main() {
 	case <-ctx.Done():
 		log.Info("timeout of 1 seconds.")
 	}
-	log.Info("Server exiting")
+	log.Info("Server exit")
+	log.Info("=============================")
 }
