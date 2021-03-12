@@ -46,7 +46,6 @@ func main() {
 		fmt.Printf("Init logger failed: %s\n", err.Error())
 		panic(err)
 	}
-	log.Info("logger initialization compelete")
 
 	log.Info("=============================")
 	log.Info("Program Started")

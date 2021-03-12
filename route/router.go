@@ -10,7 +10,7 @@ import (
 func InitRouter() *gin.Engine {
 	router := gin.Default()
 	router.Use(middleware.Cors())
-	router.LoadHTMLGlob("templates/*")
+	router.LoadHTMLGlob("templates/*/**")
 	router.Static("/static", "./static")
 
 	// Group: Todo List
