@@ -1,0 +1,11 @@
+[Unit]
+Description=mpgo
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=3s
+ExecStart=/usr/local/never-todo
+
+[Install]
+WantedBy=multi-user.target
