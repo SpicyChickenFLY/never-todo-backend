@@ -2,13 +2,18 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
+	"path"
 	"syscall"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/romberli/log"
+	"gopkg.in/ini.v1"
 
 	"github.com/SpicyChickenFLY/never-todo-backend/pkgs/mysql"
 	"github.com/SpicyChickenFLY/never-todo-backend/route"
@@ -16,14 +21,9 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-const ( // MYSQL CONFIG
-	mysqlDriverName      = "mysql"
-	mysqlServerHost      = "localhost"
-	mysqlServerPort      = "3306"
-	mysqlUserName        = "root"
-	mysqlUserPwd         = "123"
-	mysqlDatabaseName    = "never_todo"
-	mysqlDatabaseCharset = "utf8"
+const (
+	defaultLogFileRelPath  = "/log/never-todo.log"
+	defaultConfFileRelPath = "/config/never-todo.ini"
 )
 
 const ( // GIN CONFIG
@@ -31,19 +31,56 @@ const ( // GIN CONFIG
 )
 
 func main() {
-	// get mysql root@localhost password
-	userPwd := ""
-	fmt.Printf("Please enter password for mysql user root@localhost: ")
-	fmt.Scanln(&userPwd)
-	if userPwd == "" {
-		userPwd = mysqlUserPwd
+	// currDir, err := os.Getwd()
+	// if err != nil {
+	// 	fmt.Printf("get current Directory failed: %s\n", err.Error())
+	// 	panic(err)
+	// }
+	// currDir = strings.ReplaceAll(currDir, "\\", "/")
+
+	currDir := "/mnt/d/Code/go/src/github.com/SpicyChickenFLY/never-todo-backend"
+
+	// Initialize log
+	if _, _, err := log.InitLoggerWithDefaultConfig(
+		path.Join(currDir, defaultLogFileRelPath)); err != nil {
+		fmt.Printf("Init logger failed: %s\n", err.Error())
+		panic(err)
+	}
+	log.Info("logger initialization compelete")
+
+	log.Info("=============================")
+	log.Info("Program Started")
+
+	ginMode := flag.String("m", "debug", "GIN_MODE:debug/release/test")
+	gin.SetMode(*ginMode)
+	configFile := flag.String("c", path.Join(currDir, defaultConfFileRelPath), "configure file")
+	cfg, err := ini.Load(*configFile)
+	if err != nil {
+		log.Error(err.Error())
+		log.Info("=============================")
+		panic(err)
 	}
 
-	// Initialize MySQL connection
-	mysql.CreateGormConn(
-		mysqlUserName, userPwd,
-		mysqlServerHost, mysqlServerPort,
-		mysqlDatabaseName, mysqlDatabaseCharset)
+	// get mysql root@localhost password
+	dbType := cfg.Section("db").Key("type").String()
+	if dbType == "mysql" {
+		serverHost := cfg.Section("db").Key("server_host").String()
+		serverPort := cfg.Section("db").Key("server_port").String()
+		userName := cfg.Section("db").Key("user_name").String()
+		userPwd := cfg.Section("db").Key("user_pwd").String()
+		dbName := cfg.Section("db").Key("db_name").String()
+		dbCharset := cfg.Section("db").Key("db_charset").String()
+		// Initialize MySQL connection
+		if err := mysql.CreateGormConn(
+			userName, userPwd,
+			serverHost, serverPort,
+			dbName, dbCharset); err != nil {
+			log.Error(err.Error())
+			log.Info("=============================")
+			panic(err)
+		}
+		log.Info("mysql initialization compelete")
+	}
 
 	server := &http.Server{
 		Addr:    port,
@@ -54,8 +91,11 @@ func main() {
 		// service connections
 		err := server.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {
-			fmt.Println("server encount error while listen and serve:", err)
+			log.Errorf("encounter error while listen and serve:\n", err)
+			log.Info("=============================")
+			panic(err)
 		}
+		log.Info("server initialization compelete")
 	}()
 
 	// Wait for interrupt signal to gracefully shutdown the server with
@@ -66,17 +106,19 @@ func main() {
 	// kill -9 is syscall. SIGKILL but can't be catch, so don't need add it
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
-	log.Println("Shutdown Server ...")
+	log.Info("Shutdown Server ...")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
 	defer cancel()
 	if err := server.Shutdown(ctx); err != nil {
-		log.Fatal("Server Shutdown:", err)
+		log.Errorf("Server Shutdown:\n", err.Error())
+		log.Info("=============================")
+		panic(err)
 	}
 	// catching ctx.Done(). timeout of 1 seconds.
 	select {
 	case <-ctx.Done():
-		log.Println("timeout of 1 seconds.")
+		log.Info("timeout of 1 seconds.")
 	}
-	log.Println("Server exiting")
+	log.Info("Server exiting")
 }
