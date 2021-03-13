@@ -47,7 +47,7 @@ func main() {
 		panic(err)
 	}
 
-	log.Info("=============================")
+	log.Info("Program Terminated\n=============================")
 	log.Info("Program Started")
 
 	ginMode := flag.String("m", "debug", "GIN_MODE:debug/release/test")
@@ -56,7 +56,7 @@ func main() {
 	cfg, err := ini.Load(*configFile)
 	if err != nil {
 		log.Error(err.Error())
-		log.Info("=============================")
+		log.Info("Program Terminated\n=============================")
 		panic(err)
 	}
 
@@ -75,7 +75,7 @@ func main() {
 			serverHost, serverPort,
 			dbName, dbCharset); err != nil {
 			log.Error(err.Error())
-			log.Info("=============================")
+			log.Info("Program Terminated\n=============================")
 			panic(err)
 		}
 		log.Info("mysql initialization compelete")
@@ -91,7 +91,7 @@ func main() {
 		err := server.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {
 			log.Errorf("encounter error while listen and serve:\n", err)
-			log.Info("=============================")
+			log.Info("Program Terminated\n=============================")
 			panic(err)
 		}
 		log.Info("server initialization compelete")
@@ -111,7 +111,7 @@ func main() {
 	defer cancel()
 	if err := server.Shutdown(ctx); err != nil {
 		log.Errorf("Server Shutdown:\n", err.Error())
-		log.Info("=============================")
+		log.Info("Program Terminated\n=============================")
 		panic(err)
 	}
 	// catching ctx.Done(). timeout of 1 seconds.
