@@ -58,7 +58,7 @@ func GetAllFullTask(c *gin.Context) {
 // GetFullTaskByTag is a func to
 func GetFullTaskByTag(c *gin.Context) {
 	var fullTasks model.FullTasks
-	tagID, err := strconv.Atoi(c.Param("tagID"))
+	tagID, err := strconv.Atoi(c.Param("tag_id"))
 	if err != nil {
 		stackerror.New(err.Error())
 		log.Println(err)
@@ -104,7 +104,7 @@ func AddNewFullTask(c *gin.Context) {
 
 // DelOldFullTask is a func to delete Task
 func DelOldFullTask(c *gin.Context) {
-	taskID, err := strconv.Atoi(c.Param("taskID"))
+	taskID, err := strconv.Atoi(c.Param("task_id"))
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusInternalServerError,
@@ -213,7 +213,7 @@ func AddNewTag(c *gin.Context) {
 
 // DelOldTag is a func to add Tag
 func DelOldTag(c *gin.Context) {
-	tagID, err := strconv.Atoi(c.Param("tagID"))
+	tagID, err := strconv.Atoi(c.Param("tag_id"))
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusInternalServerError,
@@ -258,4 +258,19 @@ func UpdOldTag(c *gin.Context) {
 		c.JSON(http.StatusOK,
 			gin.H{"Status": 0, "Result": tag})
 	}
+}
+
+// GetLastSyncTime fetch latest sync time of server
+func GetLastSyncTime(c *gin.Context) {
+
+}
+
+// SyncFromServer get sync content from remote
+func SyncFromServer(c *gin.Context) {
+
+}
+
+// SyncToServer set sync content from local
+func SyncToServer(c *gin.Context) {
+
 }

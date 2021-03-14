@@ -4,16 +4,20 @@ import "time"
 
 // ==================== User ====================
 
+// UserPublic
+
 // User is a model for todo_user
 type User struct {
-	ID          int       `gorm:"primaryKey;autoIncrement"`
-	Email       string    `gorm:"NOT NULL"`
-	Password    string    `gorm:"NOT NULL"`
-	Nick        string    `gorm:"NOT NULL"`
+	// Privite
+	ID       int    `gorm:"primaryKey;autoIncrement"`
+	Email    string `gorm:"not null"`
+	Password string `gorm:"not null"`
+	Deleted  bool   `gorm:"not null"`
+	// Public
+	Nick        string    `gorm:"not null"`
 	CreateAt    time.Time `gorm:"default:null"`
 	LastLoginAt time.Time `gorm:"default:null"`
-	Deleted     bool      `gorm:"NOT NULL"`
-	Status      bool      `gorm:"NOT NULL"`
+	Status      int       `gorm:"not null"`
 }
 
 // Users is a slice of User

@@ -34,7 +34,7 @@ func GetUserByID(tx *gorm.DB, Users *model.Users, UserID int) error {
 
 // GetUserByNick is a func to get Users by Nick
 func GetUserByNick(tx *gorm.DB, Users *model.Users, nick string) error {
-	log.Printf("GetUserByNick(nick: %d)\n", nick)
+	log.Printf("GetUserByNick(nick: %s)\n", nick)
 	result := tx.Where(&model.User{Nick: nick, Deleted: false}).First(&Users)
 	// defer result.Close()
 	if err := result.Error; err != nil {
