@@ -53,8 +53,8 @@ func GetAllFullTask(c *gin.Context) {
 	}
 }
 
-// GetFullTaskByContent get FullTask by Name(no need to be accurate)
-func GetFullTaskByContent(c *gin.Context) {
+// GetFullTasksByContent get FullTask by Name(no need to be accurate)
+func GetFullTasksByContent(c *gin.Context) {
 	var fullTasks model.FullTasks
 	content := c.Param("content")
 	tx := mysql.GormDB.Begin()

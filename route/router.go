@@ -10,7 +10,7 @@ import (
 func InitRouter() *gin.Engine {
 	router := gin.Default()
 	router.Use(middleware.Cors())
-	router.LoadHTMLGlob("templates/*/**")
+	router.LoadHTMLGlob("templates/*")
 	router.Static("/static", "./static")
 
 	// Group: Todo List
@@ -31,8 +31,8 @@ func InitRouter() *gin.Engine {
 		groupFullTask := groupTodo.Group("/fulltask")
 		{
 			groupFullTask.GET("/", controller.GetAllFullTask)
-			groupFullTask.GET("/:content", controller.GetFullTaskByContent)
-			groupFullTask.GET("/:tag_id", controller.GetFullTaskByTag)
+			groupFullTask.GET("/content/:content", controller.GetFullTasksByContent)
+			groupFullTask.GET("/tag/:tag_id", controller.GetFullTaskByTag)
 			groupFullTask.POST("/", controller.AddNewFullTask)
 			groupFullTask.DELETE("/:task_id", controller.DelOldFullTask)
 			groupFullTask.PUT("/", controller.UpdOldFullTask)
