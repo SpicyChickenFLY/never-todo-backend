@@ -10,7 +10,7 @@ import (
 func InitRouter() *gin.Engine {
 	router := gin.Default()
 	router.Use(middleware.Cors())
-	router.LoadHTMLGlob("templates/*")
+	router.LoadHTMLGlob("templates/*/**")
 	router.Static("/static", "./static")
 
 	// Group: Todo List
@@ -25,17 +25,23 @@ func InitRouter() *gin.Engine {
 		{
 			groupTag.GET("/", controller.GetAllTag)
 			groupTag.POST("/", controller.AddNewTag)
-			groupTag.DELETE("/:tagID", controller.DelOldTag)
+			groupTag.DELETE("/:tag_id", controller.DelOldTag)
 			groupTag.PUT("/", controller.UpdOldTag)
 		}
 		groupFullTask := groupTodo.Group("/fulltask")
 		{
 			groupFullTask.GET("/", controller.GetAllFullTask)
-			groupFullTask.GET("/Content/:content", controller.GetFullTaskByContent)
-			groupFullTask.GET("/Tag/:tagID", controller.GetFullTaskByTag)
+			groupFullTask.GET("/:content", controller.GetFullTaskByContent)
+			groupFullTask.GET("/:tag_id", controller.GetFullTaskByTag)
 			groupFullTask.POST("/", controller.AddNewFullTask)
-			groupFullTask.DELETE("/:taskID", controller.DelOldFullTask)
+			groupFullTask.DELETE("/:task_id", controller.DelOldFullTask)
 			groupFullTask.PUT("/", controller.UpdOldFullTask)
+		}
+		groupSync := groupTodo.Group("/sync")
+		{
+			groupSync.GET("/", controller.GetLastSyncTime)
+			groupSync.GET("/:sync_time", controller.SyncFromServer)
+			groupSync.POST("/", controller.SyncToServer)
 		}
 	}
 	router.GET("/", controller.ShowUI)
