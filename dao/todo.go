@@ -2,6 +2,7 @@ package dao
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"time"
 
@@ -16,6 +17,18 @@ import (
 func GetAllTasks(tx *gorm.DB, tasks *model.Tasks) error {
 	log.Println("GetAllTasks")
 	result := tx.Where(&model.Task{Deleted: false}).Find(tasks)
+	// defer result.Close()
+	if err := result.Error; err != nil {
+		return stackerror.New(err.Error())
+	}
+	return nil
+}
+
+// GetTasksByContent is a func to get Tasks by ID
+func GetTasksByContent(tx *gorm.DB, tasks *model.Tasks, content string) error {
+	log.Printf("GetTaskByContent(TaskID: %s)\n", content)
+	content = fmt.Sprintf("%%%s%%", content)
+	result := tx.Where("content LIKE '?' and deleted=0", content).First(&tasks)
 	// defer result.Close()
 	if err := result.Error; err != nil {
 		return stackerror.New(err.Error())

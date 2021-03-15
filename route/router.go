@@ -31,7 +31,8 @@ func InitRouter() *gin.Engine {
 		groupFullTask := groupTodo.Group("/fulltask")
 		{
 			groupFullTask.GET("/", controller.GetAllFullTask)
-			groupFullTask.GET("/:tagID", controller.GetFullTaskByTag)
+			groupFullTask.GET("/Content/:content", controller.GetFullTaskByContent)
+			groupFullTask.GET("/Tag/:tagID", controller.GetFullTaskByTag)
 			groupFullTask.POST("/", controller.AddNewFullTask)
 			groupFullTask.DELETE("/:taskID", controller.DelOldFullTask)
 			groupFullTask.PUT("/", controller.UpdOldFullTask)

@@ -12,8 +12,6 @@ import (
 	"github.com/lingdor/stackerror"
 )
 
-// FIXME: all err should be pocessed in controllers
-
 // GetAll search for all tables and return
 // url:/todo/getall
 func GetAll(c *gin.Context) {
@@ -55,7 +53,24 @@ func GetAllFullTask(c *gin.Context) {
 	}
 }
 
-// GetFullTaskByTag is a func to
+// GetFullTaskByContent get FullTask by Name(no need to be accurate)
+func GetFullTaskByContent(c *gin.Context) {
+	var fullTasks model.FullTasks
+	content := c.Param("content")
+	tx := mysql.GormDB.Begin()
+	err := service.GetFullTasksByContent(tx, &fullTasks, content)
+	err = mysql.CheckTransaction(tx, err)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError,
+			gin.H{"Status": -1, "Result": fullTasks})
+		log.Print(err)
+	} else {
+		c.JSON(http.StatusOK,
+			gin.H{"Status": 0, "Result": fullTasks})
+	}
+}
+
+// GetFullTaskByTag get FullTask by TagID
 func GetFullTaskByTag(c *gin.Context) {
 	var fullTasks model.FullTasks
 	tagID, err := strconv.Atoi(c.Param("tagID"))

@@ -1,7 +1,7 @@
 function getFullTasks() {
     $.ajax({
         type: "GET",
-        url: "/todo/fulltask",
+        url: "/todo/fulltask/",
         dataType: "json",
         success: function (data, textStatus) {
             $("#full-tasks pre").html(
@@ -14,18 +14,37 @@ function getFullTasks() {
     });
 }
 
-function getTags() {
+function getFullTasksByContent() {
+    let urlStr = 
+        "/todo/fulltask/content/" + 
+        $("button.full-task.rtr").siblings("input.task.content").val()
     $.ajax({
         type: "GET",
-        url: "/todo/tag",
+        url: urlStr,
         dataType: "json",
         success: function (data, textStatus) {
-            $("#tags pre").html(
+            $("#full-tasks pre").html(
                 syntaxHighlight(data)
             ) 
         },
         error: function (XMLHttpRequest, textStatus, errThrown) {
-            alert("Request Error [getTag]");
+            alert("error");
+        }
+    });
+}
+
+function getFullTasksByTagID() {
+    $.ajax({
+        type: "GET",
+        url: "/todo/fulltask/",
+        dataType: "json",
+        success: function (data, textStatus) {
+            $("#full-tasks pre").html(
+                syntaxHighlight(data)
+            ) 
+        },
+        error: function (XMLHttpRequest, textStatus, errThrown) {
+            alert("error");
         }
     });
 }
@@ -40,7 +59,7 @@ function addFulltask() {
 
     $.ajax({
         type: "POST",
-        url: "/todo/fulltask",
+        url: "/todo/fulltask/",
         contentType: "application/json",
         data: dataStr,
         dataType: "json",
@@ -56,7 +75,7 @@ function addFulltask() {
 
 function delFulltask() {
     let urlStr = 
-        "/todo/fulltask" + $("button.full-task.del").siblings("input.task.id").val();
+        "/todo/fulltask/" + $("button.full-task.del").siblings("input.task.id").val();
     $.ajax({
         type: "DELETE",
         url: urlStr,
@@ -83,7 +102,7 @@ function updFulltask() {
 
     $.ajax({
         type: "PUT",
-        url: "/todo/fulltask",
+        url: "/todo/fulltask/",
         contentType: "application/json",
         data: dataStr,
         dataType: "json",
@@ -93,6 +112,22 @@ function updFulltask() {
         },
         error: function (XMLHttpRequest, textStatus, errThrown) {
             alert("Request Error [UpdateTask]");
+        }
+    });
+}
+
+function getTags() {
+    $.ajax({
+        type: "GET",
+        url: "/todo/tag",
+        dataType: "json",
+        success: function (data, textStatus) {
+            $("#tags pre").html(
+                syntaxHighlight(data)
+            ) 
+        },
+        error: function (XMLHttpRequest, textStatus, errThrown) {
+            alert("Request Error [getTag]");
         }
     });
 }

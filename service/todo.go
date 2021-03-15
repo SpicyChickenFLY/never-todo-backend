@@ -47,6 +47,32 @@ func GetFullTasks(tx *gorm.DB, fullTasks *model.FullTasks) error {
 	return nil
 }
 
+// GetFullTasksByContent is a func to get FullTask by TaskName
+func GetFullTasksByContent(
+	tx *gorm.DB, fullTasks *model.FullTasks, content string) error {
+	log.Printf("GetFullTasksByContent(content: %s)\n", content)
+	// retrieve all tasks
+	var tasks model.Tasks
+	if err := dao.GetTasksByContent(tx, &tasks, content); err != nil {
+		return err
+	}
+	// retrieve tags for each task
+	for i := 0; i < len(tasks); i++ {
+		var tags model.Tags
+		if err := dao.GetTagsByTaskID(
+			tx, &tags, tasks[i].ID); err != nil {
+			return err
+		}
+		*fullTasks = append(*fullTasks,
+			model.FullTask{
+				Task: tasks[i],
+				Tags: tags,
+			},
+		)
+	}
+	return nil
+}
+
 // GetFullTasksByTag is a func to get FullTask by TagID
 func GetFullTasksByTag(
 	tx *gorm.DB, fullTasks *model.FullTasks, tagID int) error {
