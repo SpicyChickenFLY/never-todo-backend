@@ -1,7 +1,7 @@
 function getFullTasks() {
     $.ajax({
         type: "GET",
-        url: "/todo/fulltask/",
+        url: "/api/v1/todo/fulltask/",
         dataType: "json",
         success: function (data, textStatus) {
             $("#full-tasks pre").html(
@@ -16,7 +16,7 @@ function getFullTasks() {
 
 function getFullTasksByContent() {
     let urlStr = 
-        "/todo/fulltask/content/" + 
+        "/api/v1/todo/fulltask/content/" + 
         $("button.full-task.rtr").siblings("input.task.content").val()
     $.ajax({
         type: "GET",
@@ -36,7 +36,7 @@ function getFullTasksByContent() {
 function getFullTasksByTagID() {
     $.ajax({
         type: "GET",
-        url: "/todo/fulltask/",
+        url: "/api/v1/todo/fulltask/",
         dataType: "json",
         success: function (data, textStatus) {
             $("#full-tasks pre").html(
@@ -59,7 +59,7 @@ function addFulltask() {
 
     $.ajax({
         type: "POST",
-        url: "/todo/fulltask/",
+        url: "/api/v1/todo/fulltask/",
         contentType: "application/json",
         data: dataStr,
         dataType: "json",
@@ -75,7 +75,7 @@ function addFulltask() {
 
 function delFulltask() {
     let urlStr = 
-        "/todo/fulltask/" + $("button.full-task.del").siblings("input.task.id").val();
+        "/api/v1/todo/fulltask/" + $("button.full-task.del").siblings("input.task.id").val();
     $.ajax({
         type: "DELETE",
         url: urlStr,
@@ -102,7 +102,7 @@ function updFulltask() {
 
     $.ajax({
         type: "PUT",
-        url: "/todo/fulltask/",
+        url: "/api/v1/todo/fulltask/",
         contentType: "application/json",
         data: dataStr,
         dataType: "json",
@@ -119,7 +119,7 @@ function updFulltask() {
 function getTags() {
     $.ajax({
         type: "GET",
-        url: "/todo/tag",
+        url: "/api/v1/todo/tag",
         dataType: "json",
         success: function (data, textStatus) {
             $("#tags pre").html(
@@ -144,7 +144,7 @@ function addTag() {
 
     $.ajax({
         type: "POST",
-        url: "/todo/tag",
+        url: "/api/v1/todo/tag",
         contentType: "application/json",
         data: dataStr,
         dataType: "json",
@@ -160,7 +160,7 @@ function addTag() {
 
 function delTag() {
     let urlStr = 
-        "/todo/tag" + $("button.tag.del").siblings("input.tag.id").val();
+        "/api/v1/todo/tag" + $("button.tag.del").siblings("input.tag.id").val();
 
     $.ajax({
         type: "DELETE",
@@ -190,7 +190,7 @@ function updTag() {
 
     $.ajax({
         type: "PUT",
-        url: "/todo/tag",
+        url: "/api/v1/todo/tag",
         contentType: "application/json",
         data: dataStr,
         dataType: "json",

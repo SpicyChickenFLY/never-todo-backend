@@ -8,12 +8,12 @@ import (
 
 // Task is a model for todo_task
 type Task struct {
-	ID        int       `gorm:"primaryKey;autoIncrement"`
-	Content   string    `gorm:"not null"`
-	Status    bool      `gorm:"not null"`
-	CreatedAt time.Time `gorm:"not null;default now()"`
-	UpdatedAt time.Time `gorm:"not null;default now()"`
-	Deleted   bool      `gorm:"not null;default 0"`
+	ID         int       `json:"id" gorm:"primaryKey;autoIncrement"`
+	Content    string    `json:"content" gorm:"not null"`
+	Compeleted bool      `json:"compeleted" gorm:"not null"`
+	CreatedAt  time.Time `json:"created_at" gorm:"not null;default now()"`
+	UpdatedAt  time.Time `json:"updated_at" gorm:"not null;default now()"`
+	Deleted    bool      `json:"deleted" gorm:"not null;default 0"`
 }
 
 // Tasks is a slice of Task
@@ -23,13 +23,13 @@ type Tasks []Task
 
 // Tag is a model for todo_tag
 type Tag struct {
-	ID        int       `gorm:"primaryKey;autoIncrement"`
-	Content   string    `gorm:"not null"`
-	Desc      string    `gorm:"not null"`
-	Color     string    `gorm:"not null;DEAFULT '#AAAAAA'"`
-	CreatedAt time.Time `gorm:"not null;default now()"`
-	UpdatedAt time.Time `gorm:"not null;default now()"`
-	Deleted   bool      `gorm:"not null;default 0"`
+	ID        int       `json:"id" gorm:"primaryKey;autoIncrement"`
+	Content   string    `json:"content" gorm:"not null"`
+	Desc      string    `json:"desc" gorm:"not null"`
+	Color     string    `json:"color" gorm:"not null;DEAFULT '#AAAAAA'"`
+	CreatedAt time.Time `json:"created_at" gorm:"not null;default now()"`
+	UpdatedAt time.Time `json:"updated_at" gorm:"not null;default now()"`
+	Deleted   bool      `json:"deleted" gorm:"not null;default 0"`
 }
 
 // Tags is a slice of Tag
@@ -50,8 +50,8 @@ type TaskTags []TaskTag
 
 // FullTask is a model of task list
 type FullTask struct {
-	Task Task
-	Tags Tags
+	Task   Task  `json:"task"`
+	TagsID []int `json:"tagsID"`
 }
 
 // FullTasks is a slice of FullTask

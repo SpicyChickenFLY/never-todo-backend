@@ -27,7 +27,7 @@ const (
 )
 
 const ( // GIN CONFIG
-	port = ":8080"
+	port = ":7986"
 )
 
 func main() {
