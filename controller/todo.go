@@ -97,8 +97,8 @@ func GetFullTaskByTag(c *gin.Context) {
 	}
 }
 
-// AddNewFullTask is a func to add Task
-func AddNewFullTask(c *gin.Context) {
+// AddFullTask is a func to add Task
+func AddFullTask(c *gin.Context) {
 	data := &struct {
 		TaskContent string `json:"taskContent"`
 		TagsID      []int  `json:"tagsID"`
@@ -120,9 +120,9 @@ func AddNewFullTask(c *gin.Context) {
 	}
 }
 
-// DelOldFullTask is a func to delete Task
-func DelOldFullTask(c *gin.Context) {
-	taskID, err := strconv.Atoi(c.Param("id"))
+// DelFullTask is a func to delete Task
+func DelFullTask(c *gin.Context) {
+	taskID, err := strconv.Atoi(c.Param("task_id"))
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusInternalServerError,
@@ -143,9 +143,9 @@ func DelOldFullTask(c *gin.Context) {
 	}
 }
 
-// UpdOldFullTask is a func to update Task
-func UpdOldFullTask(c *gin.Context) {
-	taskID, err := strconv.Atoi(c.Param("id"))
+// UpdFullTask is a func to update Task
+func UpdFullTask(c *gin.Context) {
+	taskID, err := strconv.Atoi(c.Param("task_id"))
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusInternalServerError,
@@ -215,8 +215,8 @@ func GetAllTag(c *gin.Context) {
 	}
 }
 
-// AddNewTag is a func to add Tag
-func AddNewTag(c *gin.Context) {
+// AddTag is a func to add Tag
+func AddTag(c *gin.Context) {
 	data := &struct {
 		Content string `json:"content"`
 		Desc    string `json:"desc"`
@@ -242,9 +242,9 @@ func AddNewTag(c *gin.Context) {
 	}
 }
 
-// DelOldTag is a func to add Tag
-func DelOldTag(c *gin.Context) {
-	tagID, err := strconv.Atoi(c.Param("id"))
+// DelTag is a func to add Tag
+func DelTag(c *gin.Context) {
+	tagID, err := strconv.Atoi(c.Param("tag_id"))
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusInternalServerError,
@@ -264,9 +264,9 @@ func DelOldTag(c *gin.Context) {
 	}
 }
 
-// UpdOldTag is a func to update Tag
-func UpdOldTag(c *gin.Context) {
-	tagID, err := strconv.Atoi(c.Param("id"))
+// UpdTag is a func to update Tag
+func UpdTag(c *gin.Context) {
+	tagID, err := strconv.Atoi(c.Param("tag_id"))
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusInternalServerError,
