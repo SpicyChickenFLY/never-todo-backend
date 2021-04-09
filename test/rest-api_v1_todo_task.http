@@ -1,0 +1,32 @@
+### get all 
+GET http://{{baseURL}}//api/v1/todo/all
+Content-Type: application/json
+
+### get all fulltasks
+GET http://{{baseURL}}//api/v1/todo/task/
+Content-Type: application/json
+
+### get fulltask by content
+GET http://{{baseURL}}/api/v1/todo/task/
+Content-Type: application/json
+
+### get fulltasks by tag_id
+GET http://{{baseURL}}/api/v1/todo/task//tag/3
+Content-Type: application/json
+
+### add new environment
+POST http://{{baseURL}}/api/v1/todo/task
+Content-Type: application/json
+
+{"env_name": "new_environment"}
+
+### update environment by id
+PUT http://{{baseURL}}/api/v1/todo/task/1
+Content-Type: application/json
+
+{"env_name": "test123"}
+
+### update environment by id
+DELETE http://{{baseURL}}/api/v1/todo/task/1
+Content-Type: application/json
+
