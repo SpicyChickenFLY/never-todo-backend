@@ -17,10 +17,6 @@ func InitRouter() *gin.Engine {
 	groupTodo := router.Group("/api/v1/todo")
 	{
 		groupTodo.GET("/all", controller.GetAll)
-		groupTask := groupTodo.Group("/task")
-		{
-			groupTask.GET("/", controller.GetAllTask)
-		}
 		groupTag := groupTodo.Group("/tag")
 		{
 			groupTag.GET("/", controller.GetAllTag)
@@ -43,20 +39,20 @@ func InitRouter() *gin.Engine {
 			groupSync.GET("/:sync_time", controller.SyncFromServer)
 			groupSync.POST("/", controller.SyncToServer)
 		}
-		groupUser := groupTodo.Group("/user")
-		{
-			groupUserInfo := groupUser.Group("/info")
-			{
-				// groupUserInfo.GET("/", controller.GetAllUserInfo)
-				groupUserInfo.GET("/:user_id", controller.GetUserInfoByID)
-				groupUserInfo.POST("/", controller.AddUserInfo)
-				groupUserInfo.POST("/:user_id", controller.DelUserInfo)
-				groupUserInfo.POST("/", controller.UpdUserInfo)
-			}
+		// groupUser := groupTodo.Group("/user")
+		// {
+		// 	groupUserInfo := groupUser.Group("/info")
+		// 	{
+		// 		// groupUserInfo.GET("/", controller.GetAllUserInfo)
+		// 		groupUserInfo.GET("/:user_id", controller.GetUserInfoByID)
+		// 		groupUserInfo.POST("/", controller.AddUserInfo)
+		// 		groupUserInfo.POST("/:user_id", controller.DelUserInfo)
+		// 		groupUserInfo.POST("/", controller.UpdUserInfo)
+		// 	}
 
-			groupUser.POST("/login", controller.CheckUserLogin)
-			groupUser.POST("/logout", controller.CheckUserLogout)
-		}
+		// 	groupUser.POST("/login", controller.CheckUserLogin)
+		// 	groupUser.POST("/logout", controller.CheckUserLogout)
+		// }
 	}
 	router.GET("/", controller.ShowUI)
 	return router

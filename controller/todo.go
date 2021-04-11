@@ -16,18 +16,14 @@ import (
 func GetAll(c *gin.Context) {
 	tx := mysql.GormDB.Begin()
 	var fullTasks model.FullTasks
+	var tasks model.Tasks
 	var tags model.Tags
-	err1 := service.GetAllFullTasks(tx, &fullTasks)
-	err2 := service.GetAllTags(tx, &tags)
-	var err error
-	if err1 != nil {
-		err = mysql.CheckTransaction(tx, err1)
-	} else if err2 != nil {
-		err = mysql.CheckTransaction(tx, err2)
-	} else {
-		err = nil
-	}
+	var taskTags model.TaskTags
+
+	err := service.GetAllTables(tx, &tasks, &tags, &taskTags)
+
 	if err != nil {
+		err = mysql.CheckTransaction(tx, err)
 		c.JSON(http.StatusInternalServerError,
 			gin.H{"status": -1})
 		log.Print(err)
@@ -36,6 +32,8 @@ func GetAll(c *gin.Context) {
 			gin.H{"status": 0, "result": gin.H{
 				"fullTasks": fullTasks,
 				"tags":      tags,
+				"tasks":     tasks,
+				"task_tags": taskTags,
 			}})
 	}
 }
