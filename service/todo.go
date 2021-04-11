@@ -27,8 +27,8 @@ func GetAllTables(
 	return dao.GetAllTaskTags(tx, taskTags)
 }
 
-// GetFullTasks is a func to get all FullTasks
-func GetFullTasks(tx *gorm.DB, fullTasks *model.FullTasks) error {
+// GetAllFullTasks is a func to get all FullTasks
+func GetAllFullTasks(tx *gorm.DB, fullTasks *model.FullTasks) error {
 	// retrieve all tasks
 	var tasks model.Tasks
 	if err := dao.GetAllTasks(tx, &tasks); err != nil {
@@ -37,11 +37,18 @@ func GetFullTasks(tx *gorm.DB, fullTasks *model.FullTasks) error {
 	// retrieve tags for each task
 	for i := 0; i < len(tasks); i++ {
 		var tags model.Tags
-		dao.GetTagsByTaskID(tx, &tags, tasks[i].ID)
+		if err := dao.GetTagsIDByTaskID(
+			tx, &tags, tasks[i].ID); err != nil {
+			return err
+		}
+		tagsID := []int{}
+		for _, tag := range tags {
+			tagsID = append(tagsID, tag.ID)
+		}
 		*fullTasks = append(*fullTasks,
 			model.FullTask{
-				Task: tasks[i],
-				Tags: tags,
+				Task:   tasks[i],
+				TagsID: tagsID,
 			})
 	}
 	return nil
@@ -59,14 +66,18 @@ func GetFullTasksByContent(
 	// retrieve tags for each task
 	for i := 0; i < len(tasks); i++ {
 		var tags model.Tags
-		if err := dao.GetTagsByTaskID(
+		if err := dao.GetTagsIDByTaskID(
 			tx, &tags, tasks[i].ID); err != nil {
 			return err
 		}
+		tagsID := []int{}
+		for _, tag := range tags {
+			tagsID = append(tagsID, tag.ID)
+		}
 		*fullTasks = append(*fullTasks,
 			model.FullTask{
-				Task: tasks[i],
-				Tags: tags,
+				Task:   tasks[i],
+				TagsID: tagsID,
 			},
 		)
 	}
@@ -85,14 +96,14 @@ func GetFullTasksByTag(
 	// retrieve tags for each task
 	for i := 0; i < len(tasks); i++ {
 		var tags model.Tags
-		if err := dao.GetTagsByTaskID(
-			tx, &tags, tasks[i].ID); err != nil {
-			return err
+		tagsID := []int{}
+		for _, tag := range tags {
+			tagsID = append(tagsID, tag.ID)
 		}
 		*fullTasks = append(*fullTasks,
 			model.FullTask{
-				Task: tasks[i],
-				Tags: tags,
+				Task:   tasks[i],
+				TagsID: tagsID,
 			},
 		)
 	}

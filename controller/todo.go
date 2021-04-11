@@ -12,44 +12,45 @@ import (
 	"github.com/lingdor/stackerror"
 )
 
-// GetAll search for all tables and return
-// url:/todo/getall
+// GetAll get all todo info
 func GetAll(c *gin.Context) {
-	var tasks model.Tasks = model.Tasks{}
-	var tags model.Tags = model.Tags{}
-	var taskTags model.TaskTags = model.TaskTags{}
 	tx := mysql.GormDB.Begin()
+	var fullTasks model.FullTasks
+	var tasks model.Tasks
+	var tags model.Tags
+	var taskTags model.TaskTags
+
 	err := service.GetAllTables(tx, &tasks, &tags, &taskTags)
-	result := gin.H{
-		"tasks":         tasks,
-		"tags":          tags,
-		"task_tag_pair": taskTags,
-	}
-	err = mysql.CheckTransaction(tx, err)
+
 	if err != nil {
+		err = mysql.CheckTransaction(tx, err)
 		c.JSON(http.StatusInternalServerError,
-			gin.H{"Status": -1, "Result": result})
+			gin.H{"status": -1})
 		log.Print(err)
 	} else {
 		c.JSON(http.StatusOK,
-			gin.H{"Status": 0, "Result": result})
+			gin.H{"status": 0, "result": gin.H{
+				"fullTasks": fullTasks,
+				"tags":      tags,
+				"tasks":     tasks,
+				"task_tags": taskTags,
+			}})
 	}
-
 }
 
 // GetAllFullTask is a func to
 func GetAllFullTask(c *gin.Context) {
 	tx := mysql.GormDB.Begin()
 	var fullTasks model.FullTasks
-	err := service.GetFullTasks(tx, &fullTasks)
+	err := service.GetAllFullTasks(tx, &fullTasks)
 	err = mysql.CheckTransaction(tx, err)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError,
-			gin.H{"Status": -1, "Result": fullTasks})
+			gin.H{"status": -1})
 		log.Print(err)
 	} else {
 		c.JSON(http.StatusOK,
-			gin.H{"Status": 0, "Result": fullTasks})
+			gin.H{"status": 0, "result": fullTasks})
 	}
 }
 
@@ -62,23 +63,23 @@ func GetFullTasksByContent(c *gin.Context) {
 	err = mysql.CheckTransaction(tx, err)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError,
-			gin.H{"Status": -1, "Result": fullTasks})
+			gin.H{"status": -1})
 		log.Print(err)
 	} else {
 		c.JSON(http.StatusOK,
-			gin.H{"Status": 0, "Result": fullTasks})
+			gin.H{"status": 0, "result": fullTasks})
 	}
 }
 
 // GetFullTaskByTag get FullTask by TagID
 func GetFullTaskByTag(c *gin.Context) {
 	var fullTasks model.FullTasks
-	tagID, err := strconv.Atoi(c.Param("tag_id"))
+	tagID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		stackerror.New(err.Error())
 		log.Println(err)
 		c.JSON(http.StatusInternalServerError,
-			gin.H{"Status": -1, "Result": fullTasks})
+			gin.H{"status": -1})
 		log.Println(err)
 	}
 	tx := mysql.GormDB.Begin()
@@ -86,19 +87,19 @@ func GetFullTaskByTag(c *gin.Context) {
 	err = mysql.CheckTransaction(tx, err)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError,
-			gin.H{"Status": -1, "Result": fullTasks})
+			gin.H{"status": -1})
 		log.Println(err)
 	} else {
 		c.JSON(http.StatusOK,
-			gin.H{"Status": 0, "Result": fullTasks})
+			gin.H{"status": 0, "result": fullTasks})
 	}
 }
 
 // AddFullTask is a func to add Task
 func AddFullTask(c *gin.Context) {
 	data := &struct {
-		TaskContent string `json:"TaskContent"`
-		TagsID      []int  `json:"TagsID"`
+		TaskContent string `json:"taskContent"`
+		TagsID      []int  `json:"tagsID"`
 	}{}
 	c.BindJSON(&data)
 	log.Printf("receive post request: %v", data)
@@ -109,11 +110,11 @@ func AddFullTask(c *gin.Context) {
 	err = mysql.CheckTransaction(tx, err)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError,
-			gin.H{"Status": -1, "Result": task})
+			gin.H{"status": -1})
 		log.Println(err)
 	} else {
 		c.JSON(http.StatusOK,
-			gin.H{"Status": 0, "Result": task})
+			gin.H{"status": 0, "result": task})
 	}
 }
 
@@ -123,7 +124,7 @@ func DelFullTask(c *gin.Context) {
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusInternalServerError,
-			gin.H{"Status": -1})
+			gin.H{"status": -1})
 		return
 	}
 	log.Printf("receive post request: %d", taskID)
@@ -132,37 +133,45 @@ func DelFullTask(c *gin.Context) {
 	err = mysql.CheckTransaction(tx, err)
 	if err != nil {
 		c.JSON(http.StatusOK,
-			gin.H{"Status": -1})
+			gin.H{"status": -1})
 		log.Print(err)
 	} else {
 		c.JSON(http.StatusOK,
-			gin.H{"Status": 0})
+			gin.H{"status": 0})
 	}
 }
 
 // UpdFullTask is a func to update Task
 func UpdFullTask(c *gin.Context) {
+	taskID, err := strconv.Atoi(c.Param("task_id"))
+	if err != nil {
+		log.Println(err)
+		c.JSON(http.StatusInternalServerError,
+			gin.H{"status": -1})
+		return
+	}
 	data := &struct {
-		TaskID      int    `json:"TaskID"`
-		TaskContent string `json:"TaskContent"`
-		TagsID      []int  `json:"TagsID"`
+		TaskContent    string `json:"taskContent"`
+		TaskCompeleted bool   `json:"taskCompeleted"`
+		TagsID         []int  `json:"tagsID"`
 	}{}
 	c.BindJSON(&data)
 	task := model.Task{
-		ID:      data.TaskID,
-		Content: data.TaskContent,
+		ID:         taskID,
+		Content:    data.TaskContent,
+		Compeleted: data.TaskCompeleted,
 	}
 	log.Printf("receive post request: %v", data)
 	tx := mysql.GormDB.Begin()
-	err := service.UpdFullTask(tx, &task, data.TagsID)
+	err = service.UpdFullTask(tx, &task, data.TagsID)
 	err = mysql.CheckTransaction(tx, err)
 	if err != nil {
 		c.JSON(http.StatusOK,
-			gin.H{"Status": -1, "Result": task})
+			gin.H{"status": -1})
 		log.Print(err)
 	} else {
 		c.JSON(http.StatusOK,
-			gin.H{"Status": 0, "Result": task})
+			gin.H{"status": 0, "result": task})
 	}
 }
 
@@ -177,11 +186,11 @@ func GetAllTask(c *gin.Context) {
 	err = mysql.CheckTransaction(tx, err)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError,
-			gin.H{"Status": -1, "Result": result})
+			gin.H{"status": -1})
 		log.Print(err)
 	} else {
 		c.JSON(http.StatusOK,
-			gin.H{"Status": 0, "Result": result})
+			gin.H{"status": 0, "result": result})
 	}
 }
 
@@ -196,33 +205,38 @@ func GetAllTag(c *gin.Context) {
 	err = mysql.CheckTransaction(tx, err)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError,
-			gin.H{"Status": -1, "Result": result})
+			gin.H{"status": -1})
 		log.Print(err)
 	} else {
 		c.JSON(http.StatusOK,
-			gin.H{"Status": 0, "Result": result})
+			gin.H{"status": 0, "result": result})
 	}
 }
 
 // AddTag is a func to add Tag
 func AddTag(c *gin.Context) {
 	data := &struct {
-		TagContent string `json:"TagContent"`
-		TagDesc    string `json:"TagDesc"`
+		Content string `json:"content"`
+		Desc    string `json:"desc"`
+		Color   string `json:"color"`
 	}{}
 	c.BindJSON(&data)
 	log.Printf("receive post request: %v", data)
-	tag := model.Tag{Content: data.TagContent, Desc: data.TagDesc}
+	tag := model.Tag{
+		Content: data.Content,
+		Desc:    data.Desc,
+		Color:   data.Color,
+	}
 	tx := mysql.GormDB.Begin()
 	err := service.AddTag(tx, tag)
 	err = mysql.CheckTransaction(tx, err)
 	if err != nil {
 		c.JSON(http.StatusOK,
-			gin.H{"Status": -1, "Result": tag})
+			gin.H{"status": -1})
 		log.Print(err)
 	} else {
 		c.JSON(http.StatusOK,
-			gin.H{"Status": 0, "Result": tag})
+			gin.H{"status": 0, "result": tag})
 	}
 }
 
@@ -232,7 +246,7 @@ func DelTag(c *gin.Context) {
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusInternalServerError,
-			gin.H{"Status": -1})
+			gin.H{"status": -1})
 		return
 	}
 	tx := mysql.GormDB.Begin()
@@ -240,44 +254,53 @@ func DelTag(c *gin.Context) {
 	err = mysql.CheckTransaction(tx, err)
 	if err != nil {
 		c.JSON(http.StatusOK,
-			gin.H{"Status": -1})
+			gin.H{"status": -1})
 		log.Print(err)
 	} else {
 		c.JSON(http.StatusOK,
-			gin.H{"Status": 0})
+			gin.H{"status": 0})
 	}
 }
 
 // UpdTag is a func to update Tag
 func UpdTag(c *gin.Context) {
+	tagID, err := strconv.Atoi(c.Param("tag_id"))
+	if err != nil {
+		log.Println(err)
+		c.JSON(http.StatusInternalServerError,
+			gin.H{"status": -1})
+		return
+	}
 	data := &struct {
-		TagID      int    `json:"TagID"`
-		TagContent string `json:"TagContent"`
-		TagDesc    string `json:"TagDesc"`
+		Content string `json:"content"`
+		Desc    string `json:"desc"`
+		Color   string `json:"color"`
 	}{}
 	c.BindJSON(&data)
 	tag := model.Tag{
-		ID:      data.TagID,
-		Content: data.TagContent,
-		Desc:    data.TagDesc,
+		ID:      tagID,
+		Content: data.Content,
+		Desc:    data.Desc,
+		Color:   data.Color,
 	}
 	log.Printf("receive post request: %v", data)
 	tx := mysql.GormDB.Begin()
-	err := service.UpdTag(tx, &tag)
+	err = service.UpdTag(tx, &tag)
 	err = mysql.CheckTransaction(tx, err)
 	if err != nil {
 		c.JSON(http.StatusOK,
-			gin.H{"Status": -1, "Result": tag})
+			gin.H{"status": -1})
 		log.Print(err)
 	} else {
 		c.JSON(http.StatusOK,
-			gin.H{"Status": 0, "Result": tag})
+			gin.H{"status": 0, "result": tag})
 	}
 }
 
 // GetLastSyncTime fetch latest sync time of server
 func GetLastSyncTime(c *gin.Context) {
-
+	// c.JSON(http.StatusOK,
+	// 	gin.H{"status": 0, "result": tag})
 }
 
 // SyncFromServer get sync content from remote

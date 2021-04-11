@@ -239,12 +239,12 @@ func DelTagOfAllTasks(tx *gorm.DB, tagID int) error {
 
 // ==================== Other ====================
 
-// GetTagsByTaskID is a func to get Tags By TaskID
-func GetTagsByTaskID(tx *gorm.DB, tags *model.Tags, taskID int) error {
+// GetTagsIDByTaskID is a func to get Tags By TaskID
+func GetTagsIDByTaskID(tx *gorm.DB, tags *model.Tags, taskID int) error {
 	log.Printf("GetTagsByTaskID(taskID: %d) \n", taskID)
 	result := tx.Joins(
-		"LEFT JOIN task_tags ON tags.id=task_tags.tag_id AND task_tags.task_id = ?", taskID).Find(&tags)
-	// defer result.Close()
+		"LEFT JOIN task_tags ON tags.id=task_tags.tag_id").Where(
+		"task_tags.task_id = ?", taskID).Select("tags.id").Find(&tags)
 	if err := result.Error; err != nil {
 		return stackerror.New(err.Error())
 	}
@@ -255,8 +255,8 @@ func GetTagsByTaskID(tx *gorm.DB, tags *model.Tags, taskID int) error {
 func GetTasksByTagID(tx *gorm.DB, tasks *model.Tasks, tagID int) error {
 	log.Printf("GetTagsByTaskID(tagID: %d) \n", tagID)
 	result := tx.Joins(
-		"LEFT JOIN task_tags ON tasks.id=task_tags.task_id AND task_tags.tag_id = ?", tagID).Find(&tasks)
-	// defer result.Close()
+		"LEFT JOIN task_tags ON tasks.id=task_tags.task_id").Where(
+		"task_tags.tag_id = ?", tagID).Find(&tasks)
 	if err := result.Error; err != nil {
 		return stackerror.New(err.Error())
 	}
