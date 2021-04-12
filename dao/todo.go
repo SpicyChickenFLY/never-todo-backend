@@ -1,7 +1,6 @@
 package dao
 
 import (
-	"errors"
 	"fmt"
 	"log"
 	"time"
@@ -13,7 +12,7 @@ import (
 
 // ==================== Task ====================
 
-// GetAllTasks is a func to get all Tasks
+// GetAllTasks get all Tasks
 func GetAllTasks(tx *gorm.DB, tasks *model.Tasks) error {
 	log.Println("GetAllTasks")
 	result := tx.Where(&model.Task{Deleted: false}).Find(tasks)
@@ -24,7 +23,7 @@ func GetAllTasks(tx *gorm.DB, tasks *model.Tasks) error {
 	return nil
 }
 
-// GetTasksByContent is a func to get Tasks by ID
+// GetTasksByContent get Tasks by ID
 func GetTasksByContent(tx *gorm.DB, tasks *model.Tasks, content string) error {
 	log.Printf("GetTaskByContent(TaskID: %s)\n", content)
 	content = fmt.Sprintf("%%%s%%", content)
@@ -36,7 +35,7 @@ func GetTasksByContent(tx *gorm.DB, tasks *model.Tasks, content string) error {
 	return nil
 }
 
-// GetTaskByID is a func to get Tasks by ID
+// GetTaskByID get Tasks by ID
 func GetTaskByID(tx *gorm.DB, tasks *model.Tasks, taskID int) error {
 	log.Printf("GetTaskByID(TaskID: %d)\n", taskID)
 	result := tx.Where(&model.Task{ID: taskID, Deleted: false}).First(&tasks)
@@ -47,21 +46,7 @@ func GetTaskByID(tx *gorm.DB, tasks *model.Tasks, taskID int) error {
 	return nil
 }
 
-// IsExistTaskID detect if task(id) exists
-func IsExistTaskID(tx *gorm.DB, taskID int) (bool, error) {
-	log.Printf("IsExistTaskID(TaskID: %d)\n", taskID)
-	var tasks *model.Tasks = &model.Tasks{}
-	err := tx.Where(&model.Task{ID: taskID}).First(&tasks).Error
-	if err != nil {
-		return false, stackerror.New(err.Error())
-	}
-	if len(*tasks) <= 0 {
-		return false, nil
-	}
-	return true, nil
-}
-
-// AddTask is a func to add Task
+// AddTask add Task
 func AddTask(tx *gorm.DB, task *model.Task) error {
 	log.Printf("AddTask(task: %v\n)", task)
 	task.CreatedAt = time.Now()
@@ -72,7 +57,7 @@ func AddTask(tx *gorm.DB, task *model.Task) error {
 	return nil
 }
 
-// DelTask is a func to delete Task
+// DelTask delete Task
 func DelTask(tx *gorm.DB, taskID int) error {
 	log.Printf("DelTask(taskID: %d) \n", taskID)
 	if err := tx.Model(&model.Task{}).Where(
@@ -82,7 +67,7 @@ func DelTask(tx *gorm.DB, taskID int) error {
 	return nil
 }
 
-// UpdTask is a func to update Task
+// UpdTask update Task
 func UpdTask(tx *gorm.DB, task *model.Task) error {
 	log.Printf("UpdTask(task: %v) \n", task)
 	task.UpdatedAt = time.Now()
@@ -96,7 +81,7 @@ func UpdTask(tx *gorm.DB, task *model.Task) error {
 
 // ==================== Tag ====================
 
-// GetAllTags is a func to get all Tags
+// GetAllTags get all Tags
 func GetAllTags(tx *gorm.DB, tags *model.Tags) error {
 	log.Println("GetTagByID")
 	result := tx.Find(&tags)
@@ -107,7 +92,7 @@ func GetAllTags(tx *gorm.DB, tags *model.Tags) error {
 	return nil
 }
 
-// GetTagByID is a func to get Tags by ID
+// GetTagByID get Tags by ID
 func GetTagByID(tx *gorm.DB, tags *model.Tags, tagID int) error {
 	log.Printf("GetTagByID(TagID: %d)\n", tagID)
 	result := tx.Where(&model.Tag{ID: tagID}).First(&tags)
@@ -118,22 +103,7 @@ func GetTagByID(tx *gorm.DB, tags *model.Tags, tagID int) error {
 	return nil
 }
 
-// IsExistTagID detect if tag(id) exists
-func IsExistTagID(tx *gorm.DB, tagID int) (bool, error) {
-	log.Printf("IsExistTagID(TagID: %d)\n", tagID)
-	var tags *model.Tags = &model.Tags{}
-	if err := tx.Where(
-		&model.Tag{ID: tagID}).First(
-		&tags).Error; err != nil {
-		return false, stackerror.New(err.Error())
-	}
-	if len(*tags) <= 0 {
-		return false, nil
-	}
-	return true, nil
-}
-
-// AddTag is a func to add Tag
+// AddTag add Tag
 func AddTag(tx *gorm.DB, tag *model.Tag) error {
 	log.Printf("AddTag(tag:%v\n)", tag)
 	tag.CreatedAt = time.Now()
@@ -144,7 +114,7 @@ func AddTag(tx *gorm.DB, tag *model.Tag) error {
 	return nil
 }
 
-// DelTag is a func to delete Tag
+// DelTag delete Tag
 func DelTag(tx *gorm.DB, tagID int) error {
 	log.Printf("DelTag(tagID: %d) \n", tagID)
 	if err := tx.Model(&model.Tag{}).Where(
@@ -154,7 +124,7 @@ func DelTag(tx *gorm.DB, tagID int) error {
 	return nil
 }
 
-// UpdTag is a func to update Tag
+// UpdTag update Tag
 func UpdTag(tx *gorm.DB, tag *model.Tag) error {
 	log.Printf("UpdTag(tag: %v) \n", tag)
 	tag.UpdatedAt = time.Now()
@@ -166,7 +136,7 @@ func UpdTag(tx *gorm.DB, tag *model.Tag) error {
 
 // ==================== TaskTag ====================
 
-// GetAllTaskTags is a func to get all TaskTags
+// GetAllTaskTags get all TaskTags
 func GetAllTaskTags(tx *gorm.DB, taskTags *model.TaskTags) error {
 	log.Println("GetAllTaskTags")
 	result := tx.Find(&taskTags)
@@ -177,7 +147,7 @@ func GetAllTaskTags(tx *gorm.DB, taskTags *model.TaskTags) error {
 	return nil
 }
 
-// GetTaskTagsByTaskID is a func to get TaskTags by TaskID
+// GetTaskTagsByTaskID get TaskTags by TaskID
 func GetTaskTagsByTaskID(
 	tx *gorm.DB, taskTags *model.TaskTags, taskID int) error {
 	log.Printf("GetTaskTagsByTaskID(TaskID: %d)\n", taskID)
@@ -189,33 +159,47 @@ func GetTaskTagsByTaskID(
 	return nil
 }
 
-// GetTaskTagsByTagID is a func to get TaskTags by TagID
+// GetTaskTagsByTagID get TaskTags by TagID
 func GetTaskTagsByTagID(
 	tx *gorm.DB, taskTags *model.TaskTags, tagID int) error {
 	log.Printf("GetTaskTagsByTagID(TagID: %d)\n", tagID)
 	result := tx.Where(&model.TaskTag{TagID: tagID}).Find(&taskTags)
-	// defer result.Close()
 	if err := result.Error; err != nil {
 		return stackerror.New(err.Error())
 	}
 	return nil
 }
 
-// AddTagForTask is a func to add TaskTag
+// AddTaskTag add TaskTag by struct
+func AddTaskTag(tx *gorm.DB, taskTag *model.TaskTag) error {
+	log.Printf("AddTaskTag(taskTag:%v\n)", taskTag)
+	if err := tx.Create(&taskTag).Error; err != nil {
+		return stackerror.New(err.Error())
+	}
+	return nil
+}
+
+// AddTagForTask add TaskTag by id
 func AddTagForTask(tx *gorm.DB, taskID, tagID int) error {
 	log.Printf("AddTagForTask(taskID: %d, tagID: %d)\n", taskID, tagID)
 	taskTag := model.TaskTag{TaskID: taskID, TagID: tagID}
 	if err := tx.Create(&taskTag).Error; err != nil {
 		return stackerror.New(err.Error())
 	}
-	if err := tx.Create(taskTag).Error; err != nil {
-		err := errors.New("failed to add tag by content")
+	return nil
+}
+
+// DelTaskTag delete TaskTag by id
+func DelTaskTag(tx *gorm.DB, taskTagID int) error {
+	log.Printf("DelTaskTag(taskTagID: %d) \n", taskTagID)
+	if err := tx.Model(&model.TaskTag{}).Where(
+		"id=?", taskTagID).Update("deleted", true).Error; err != nil {
 		return stackerror.New(err.Error())
 	}
 	return nil
 }
 
-// DelAllTagsOfTask is a func to delete all tags of a task
+// DelAllTagsOfTask delete all tags of a task
 func DelAllTagsOfTask(tx *gorm.DB, taskID int) error {
 	log.Printf("DelAllTagsOfTask(taskID: %d) \n", taskID)
 	if err := tx.Where(
@@ -226,7 +210,7 @@ func DelAllTagsOfTask(tx *gorm.DB, taskID int) error {
 	return nil
 }
 
-// DelTagOfAllTasks is a func to delete a tag of all tasks
+// DelTagOfAllTasks delete a tag of all tasks
 func DelTagOfAllTasks(tx *gorm.DB, tagID int) error {
 	log.Printf("DelTagOfAllTasks(tagID: %d) \n", tagID)
 	if err := tx.Where(
@@ -239,7 +223,7 @@ func DelTagOfAllTasks(tx *gorm.DB, tagID int) error {
 
 // ==================== Other ====================
 
-// GetTagsIDByTaskID is a func to get Tags By TaskID
+// GetTagsIDByTaskID get Tags By TaskID
 func GetTagsIDByTaskID(tx *gorm.DB, tags *model.Tags, taskID int) error {
 	log.Printf("GetTagsByTaskID(taskID: %d) \n", taskID)
 	result := tx.Joins(
@@ -251,7 +235,7 @@ func GetTagsIDByTaskID(tx *gorm.DB, tags *model.Tags, taskID int) error {
 	return nil
 }
 
-// GetTasksByTagID is a func to get Tasks By TagID
+// GetTasksByTagID get Tasks By TagID
 func GetTasksByTagID(tx *gorm.DB, tasks *model.Tasks, tagID int) error {
 	log.Printf("GetTagsByTaskID(tagID: %d) \n", tagID)
 	result := tx.Joins(

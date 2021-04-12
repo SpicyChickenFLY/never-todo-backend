@@ -5,11 +5,10 @@ import (
 
 	"github.com/SpicyChickenFLY/never-todo-backend/dao"
 	"github.com/SpicyChickenFLY/never-todo-backend/model"
-	"github.com/lingdor/stackerror"
 	"gorm.io/gorm"
 )
 
-// GetAllTables is a func to get all tables
+// GetAllTables get all tables
 func GetAllTables(
 	tx *gorm.DB,
 	tasks *model.Tasks,
@@ -27,7 +26,26 @@ func GetAllTables(
 	return dao.GetAllTaskTags(tx, taskTags)
 }
 
-// GetAllFullTasks is a func to get all FullTasks
+// AddFullTask service for add new full task
+func AddFullTask(tx *gorm.DB, task *model.Task, tagsID []int) error {
+	// add new task
+	err := dao.AddTask(
+		tx, task)
+	if err != nil {
+		return err
+	}
+	// add new task-tag
+	taskID := task.ID
+	for _, tagID := range tagsID {
+		if err := dao.AddTagForTask(
+			tx, int(taskID), tagID); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// GetAllFullTasks get all FullTasks
 func GetAllFullTasks(tx *gorm.DB, fullTasks *model.FullTasks) error {
 	// retrieve all tasks
 	var tasks model.Tasks
@@ -54,7 +72,7 @@ func GetAllFullTasks(tx *gorm.DB, fullTasks *model.FullTasks) error {
 	return nil
 }
 
-// GetFullTasksByContent is a func to get FullTask by TaskName
+// GetFullTasksByContent get FullTask by TaskName
 func GetFullTasksByContent(
 	tx *gorm.DB, fullTasks *model.FullTasks, content string) error {
 	log.Printf("GetFullTasksByContent(content: %s)\n", content)
@@ -84,7 +102,7 @@ func GetFullTasksByContent(
 	return nil
 }
 
-// GetFullTasksByTag is a func to get FullTask by TagID
+// GetFullTasksByTag get FullTask by TagID
 func GetFullTasksByTag(
 	tx *gorm.DB, fullTasks *model.FullTasks, tagID int) error {
 	log.Printf("GetFullTaskByTag(tagID: %d)\n", tagID)
@@ -110,44 +128,7 @@ func GetFullTasksByTag(
 	return nil
 }
 
-// AddFullTask is a func to add full task
-// taskContent:
-// tagsID:
-// return: Task(ID, Content, CreateTime, UpdateTime, Status), error
-func AddFullTask(tx *gorm.DB, task *model.Task, tagsID []int) error {
-
-	// check tags exists
-	for _, tagID := range tagsID {
-		ok, err := dao.IsExistTagID(tx, tagID)
-		if err != nil {
-			return err
-		}
-		if !ok {
-			return stackerror.New(
-				"target TagID is not exist")
-		}
-	}
-	// add new task
-	err := dao.AddTask(
-		tx, task)
-	if err != nil {
-		return err
-	}
-	// add new task-tag
-	taskID := task.ID
-	for _, tagID := range tagsID {
-		if err := dao.AddTagForTask(
-			tx, int(taskID), tagID); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-// UpdFullTask is a func to add full task
-// task(ID, Content, CreateTime, UpdateTime, Status):
-// tagsID:
-// return: Task(ID, Content, CreateTime, UpdateTime, Status), error
+// UpdFullTask add full task
 func UpdFullTask(tx *gorm.DB, task *model.Task, tagsID []int) error {
 	// delete old tags
 	if err := dao.DelAllTagsOfTask(tx, task.ID); err != nil {
@@ -155,14 +136,6 @@ func UpdFullTask(tx *gorm.DB, task *model.Task, tagsID []int) error {
 	}
 	// insert new tags
 	for _, tagID := range tagsID {
-		ok, err := dao.IsExistTagID(tx, tagID)
-		if err != nil {
-			return err
-		}
-		if !ok {
-			return stackerror.New(
-				"target TagID is not exist")
-		}
 		if err := dao.AddTagForTask(tx, task.ID, tagID); err != nil {
 			return err
 		}
@@ -179,57 +152,12 @@ func UpdFullTask(tx *gorm.DB, task *model.Task, tagsID []int) error {
 	return nil
 }
 
-// DelFullTask is a func to add full task
-// TaskID: ID of Task
+// DelFullTask add full task
 func DelFullTask(tx *gorm.DB, taskID int) error {
-	ok, err := dao.IsExistTaskID(tx, taskID)
-	if err != nil {
-		return err
-	}
-	if !ok {
-		return stackerror.New(
-			"target TaskID is not exist")
-	}
 	// delete all tags for this task
 	if err := dao.DelAllTagsOfTask(tx, taskID); err != nil {
 		return err
 	}
 	// delete this task
 	return dao.DelTask(tx, taskID)
-}
-
-// GetAllTasks is a func to get all Tasks
-func GetAllTasks(tx *gorm.DB, tasks *model.Tasks) error {
-	// retrieve all tasks
-	return dao.GetAllTasks(tx, tasks)
-}
-
-// GetAllTags is a func to get all tags
-func GetAllTags(tx *gorm.DB, tags *model.Tags) error {
-	// retrieve all tags
-	return dao.GetAllTags(tx, tags)
-}
-
-// AddTag is a func to add new tag
-// tag: Tag(ID, Content, Desc)
-// return: Tag(ID, Content, Desc), error
-func AddTag(tx *gorm.DB, tag model.Tag) error {
-	// Add new tag
-	return dao.AddTag(tx, &tag)
-}
-
-// DelTag is a func to delete old tag
-// TagID: ID of Tag
-func DelTag(tx *gorm.DB, tagID int) error {
-	// delete this tag for all task with it
-	if err := dao.DelTagOfAllTasks(tx, tagID); err != nil {
-		return err
-	}
-	// delete this tag
-	return dao.DelTag(tx, tagID)
-}
-
-// UpdTag is a func to update old tag
-func UpdTag(tx *gorm.DB, tag *model.Tag) error {
-	return dao.UpdTag(tx, tag)
 }

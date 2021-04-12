@@ -10,7 +10,7 @@ import (
 
 // ==================== User ====================
 
-// GetAllUsers is a func to get all Users
+// GetAllUsers get all Users
 func GetAllUsers(tx *gorm.DB, users *model.Users) error {
 	log.Println("GetAllUsers")
 	result := tx.Where(&model.User{Deleted: false}).Find(users)
@@ -21,7 +21,7 @@ func GetAllUsers(tx *gorm.DB, users *model.Users) error {
 	return nil
 }
 
-// GetUserByID is a func to get Users by ID
+// GetUserByID get Users by ID
 func GetUserByID(tx *gorm.DB, Users *model.Users, UserID int) error {
 	log.Printf("GetUserByID(UserID: %d)\n", UserID)
 	result := tx.Where(&model.User{ID: UserID, Deleted: false}).First(&Users)
@@ -32,7 +32,7 @@ func GetUserByID(tx *gorm.DB, Users *model.Users, UserID int) error {
 	return nil
 }
 
-// GetUserByNick is a func to get Users by Nick
+// GetUserByNick get Users by Nick
 func GetUserByNick(tx *gorm.DB, Users *model.Users, nick string) error {
 	log.Printf("GetUserByNick(nick: %s)\n", nick)
 	result := tx.Where(&model.User{Nick: nick, Deleted: false}).First(&Users)

@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// GetUserInfoByID is a func to get UserInfo
+// GetUserInfoByID get UserInfo
 func GetUserInfoByID(c *gin.Context) {
 	// var userInfos model.UserInfos = model.UserInfos{}
 	// tx := mysql.GormDB.Begin()
@@ -23,7 +23,7 @@ func GetUserInfoByID(c *gin.Context) {
 	// }
 }
 
-// AddUserInfo is a func to add UserInfo
+// AddUserInfo add UserInfo
 func AddUserInfo(c *gin.Context) {
 	// data := &struct {
 	// 	UserInfoContent string `json:"UserInfoContent"`
@@ -45,7 +45,7 @@ func AddUserInfo(c *gin.Context) {
 	// }
 }
 
-// DelUserInfo is a func to add UserInfo
+// DelUserInfo add UserInfo
 func DelUserInfo(c *gin.Context) {
 	// userInfoID, err := strconv.Atoi(c.Param("userInfo_id"))
 	// if err != nil {
@@ -67,7 +67,7 @@ func DelUserInfo(c *gin.Context) {
 	// }
 }
 
-// UpdUserInfo is a func to update UserInfo
+// UpdUserInfo update UserInfo
 func UpdUserInfo(c *gin.Context) {
 	// data := &struct {
 	// 	UserInfoID      int    `json:"UserInfoID"`

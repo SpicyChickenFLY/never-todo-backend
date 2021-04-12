@@ -2,6 +2,7 @@ package route
 
 import (
 	"github.com/SpicyChickenFLY/never-todo-backend/controller"
+	todoCtrl "github.com/SpicyChickenFLY/never-todo-backend/controller/todo"
 	"github.com/SpicyChickenFLY/never-todo-backend/pkgs/middleware"
 	"github.com/gin-gonic/gin"
 )
@@ -16,22 +17,36 @@ func InitRouter() *gin.Engine {
 	// Group: Todo List
 	groupTodo := router.Group("/api/v1/todo")
 	{
-		groupTodo.GET("/all", controller.GetAll)
+		groupTodo.GET("/all", todoCtrl.GetAll)
+
+		groupTask := groupTodo.Group("/task")
+		{
+			groupTask.GET("/", todoCtrl.GetAllTask)
+			groupTask.POST("/", todoCtrl.AddTask)
+			groupTask.DELETE("/:id", todoCtrl.DelTask)
+			groupTask.PUT("/", todoCtrl.UpdTask)
+		}
 		groupTag := groupTodo.Group("/tag")
 		{
-			groupTag.GET("/", controller.GetAllTag)
-			groupTag.POST("/", controller.AddTag)
-			groupTag.DELETE("/:tag_id", controller.DelTag)
-			groupTag.PUT("/", controller.UpdTag)
+			groupTag.GET("/", todoCtrl.GetAllTag)
+			groupTag.POST("/", todoCtrl.AddTag)
+			groupTag.DELETE("/:tag_id", todoCtrl.DelTag)
+			groupTag.PUT("/", todoCtrl.UpdTag)
+		}
+		groupTaskTag := groupTodo.Group("/task-tag")
+		{
+			groupTaskTag.GET("/", todoCtrl.GetAllTaskTag)
+			groupTaskTag.POST("/", todoCtrl.AddTaskTag)
+			groupTaskTag.DELETE("/:id", todoCtrl.DelTaskTag)
 		}
 		groupFullTask := groupTodo.Group("/fulltask")
 		{
-			groupFullTask.GET("/", controller.GetAllFullTask)
-			groupFullTask.GET("/content/:content", controller.GetFullTasksByContent)
-			groupFullTask.GET("/tag/:tag_id", controller.GetFullTaskByTag)
-			groupFullTask.POST("/", controller.AddFullTask)
-			groupFullTask.DELETE("/:task_id", controller.DelFullTask)
-			groupFullTask.PUT("/", controller.UpdFullTask)
+			groupFullTask.GET("/", todoCtrl.GetAllFullTask)
+			groupFullTask.GET("/content/:content", todoCtrl.GetFullTasksByContent)
+			groupFullTask.GET("/tag/:tag_id", todoCtrl.GetFullTaskByTag)
+			groupFullTask.POST("/", todoCtrl.AddFullTask)
+			groupFullTask.DELETE("/:id", todoCtrl.DelFullTask)
+			groupFullTask.PUT("/", todoCtrl.UpdFullTask)
 		}
 		groupSync := groupTodo.Group("/sync")
 		{

@@ -33,7 +33,7 @@ func CreateGormConn(
 	return nil
 }
 
-// CheckTransaction is a func to decide rollback or commit
+// CheckTransaction decide rollback or commit
 func CheckTransaction(tx *gorm.DB, err error) error {
 	if err != nil {
 		if err := tx.Rollback().Error; err != nil {

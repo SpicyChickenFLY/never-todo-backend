@@ -11,7 +11,7 @@ import (
 // OriginDB is a connection pool of database
 var OriginDB *sql.DB
 
-// CreateOriginConn is a func to create a connection pool
+// CreateOriginConn create a connection pool
 func CreateOriginConn(
 	driverName,
 	userName, userPwd,
@@ -36,7 +36,7 @@ func CreateOriginConn(
 	return nil
 }
 
-// CloseOriginConn is a func to close connection pool
+// CloseOriginConn close connection pool
 func CloseOriginConn() {
 	OriginDB.Close()
 }
