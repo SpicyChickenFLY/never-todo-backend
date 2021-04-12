@@ -2,6 +2,6 @@
 
 export GIN_MODE=release
 
-cd [your_path]
 
 # TODO: make software right path
+/usr/local/never-todo/main -c /etc/never-todo.ini
