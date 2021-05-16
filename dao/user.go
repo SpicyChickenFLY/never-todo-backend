@@ -21,10 +21,10 @@ func GetAllUsers(tx *gorm.DB, users *model.Users) error {
 	return nil
 }
 
-// GetUserByID get Users by ID
-func GetUserByID(tx *gorm.DB, Users *model.Users, UserID int) error {
+// GetUserByID get User by ID
+func GetUserByID(tx *gorm.DB, User *model.User, UserID int) error {
 	log.Printf("GetUserByID(UserID: %d)\n", UserID)
-	result := tx.Where(&model.User{ID: UserID, Deleted: false}).First(&Users)
+	result := tx.Where(&model.User{ID: UserID, Deleted: false}).First(&User)
 	// defer result.Close()
 	if err := result.Error; err != nil {
 		return stackerror.New(err.Error())
