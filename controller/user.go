@@ -1,26 +1,35 @@
 package controller
 
 import (
+	"log"
+	"net/http"
+	"strconv"
+
+	"github.com/SpicyChickenFLY/never-todo-backend/dao"
+	"github.com/SpicyChickenFLY/never-todo-backend/model"
+	"github.com/SpicyChickenFLY/never-todo-backend/pkgs/mysql"
 	"github.com/gin-gonic/gin"
 )
 
-// GetUserInfoByID get UserInfo
-func GetUserInfoByID(c *gin.Context) {
-	// var userInfos model.UserInfos = model.UserInfos{}
-	// tx := mysql.GormDB.Begin()
-	// err := service.GetUserInfoByID(tx, &userInfos)
-	// result := gin.H{
-	// 	"userInfos": userInfos,
-	// }
-	// err = mysql.CheckTransaction(tx, err)
-	// if err != nil {
-	// 	c.JSON(http.StatusInternalServerError,
-	// 		gin.H{"Status": -1, "Result": result})
-	// 	log.Print(err)
-	// } else {
-	// 	c.JSON(http.StatusOK,
-	// 		gin.H{"Status": 0, "Result": result})
-	// }
+// GetUserByID get User
+func GetUserByID(c *gin.Context) {
+	userIDStr := c.Param("user")
+	userID, err := strconv.Atoi(userIDStr)
+	var user model.User = model.User{}
+	tx := mysql.GormDB.Begin()
+	err = dao.GetUserByID(tx, &user, userID)
+	result := gin.H{
+		"user": user,
+	}
+	err = mysql.CheckTransaction(tx, err)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError,
+			gin.H{"Status": -1, "Result": result})
+		log.Print(err)
+	} else {
+		c.JSON(http.StatusOK,
+			gin.H{"Status": 0, "Result": result})
+	}
 }
 
 // AddUserInfo add UserInfo

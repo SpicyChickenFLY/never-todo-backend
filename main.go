@@ -8,6 +8,8 @@ import (
 	"os"
 	"os/signal"
 	"path"
+	"runtime"
+	"strings"
 	"syscall"
 	"time"
 
@@ -22,8 +24,8 @@ import (
 )
 
 const (
-	defaultLogFileRelPath  = "/log/never-todo.log"
-	defaultConfFileRelPath = "/config/never-todo.ini"
+	defaultLogFileRelPath  = "log/never-todo.log"
+	defaultConfFileRelPath = "config/never-todo.ini"
 )
 
 const ( // GIN CONFIG
@@ -31,18 +33,29 @@ const ( // GIN CONFIG
 )
 
 func main() {
-	// currDir, err := os.Getwd()
-	// if err != nil {
-	// 	fmt.Printf("get current Directory failed: %s\n", err.Error())
-	// 	panic(err)
-	// }
-	// currDir = strings.ReplaceAll(currDir, "\\", "/")
+	// get cwd
+	currDir, err := os.Getwd()
+	if err != nil {
+		fmt.Printf("get current Directory failed: %s\n", err.Error())
+		panic(err)
+	}
 
-	currDir := "/mnt/d/Code/go/src/github.com/SpicyChickenFLY/never-todo-backend"
+	logPath := path.Join(currDir, defaultLogFileRelPath)
+	confPath := path.Join(currDir, defaultConfFileRelPath)
+
+	sysType := runtime.GOOS
+	switch sysType {
+	case "linux":
+		logPath = strings.ReplaceAll(logPath, "\\", "/")
+		confPath = strings.ReplaceAll(confPath, "\\", "/")
+	case "windows":
+		logPath = strings.ReplaceAll(logPath, "/", "\\")
+		confPath = strings.ReplaceAll(confPath, "/", "\\")
+	}
 
 	// Initialize log
 	if _, _, err := log.InitLoggerWithDefaultConfig(
-		path.Join(currDir, defaultLogFileRelPath)); err != nil {
+		logPath); err != nil {
 		fmt.Printf("Init logger failed: %s\n", err.Error())
 		panic(err)
 	}
@@ -52,7 +65,7 @@ func main() {
 
 	ginMode := flag.String("m", "debug", "GIN_MODE:debug/release/test")
 	gin.SetMode(*ginMode)
-	configFile := flag.String("c", path.Join(currDir, defaultConfFileRelPath), "configure file")
+	configFile := flag.String("c", confPath, "configure file")
 	cfg, err := ini.Load(*configFile)
 	if err != nil {
 		log.Error(err.Error())
