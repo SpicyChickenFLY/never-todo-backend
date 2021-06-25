@@ -1,38 +1,35 @@
-# NEVER-TODO-BACKEND
+<img src="./static/icon-512.png" width = "100" height = "100" div align=center />
+
+# never-todo-backend
+
+> 一个基于gin框架搭建的never-todo系列产品的后端同步服务
 
 [ Document in English ](./README.md)
 
 ## 总览
-
-这是一个基于Gin框架的待办列表项目的后端部分，对应的前端项目由blue pongo负责进行开发（项目链接地址请点[这里](https://github.com/)）
-该项目的目标是实现一个在线使用的支持自定义标签的个人代办列表功能，将来可能会实现离线使用的功能
-
-## 特性：
-* 待办列表功能
-  * 支持新增、删除、修改代办
-  * 支持为代办设置自定义标签
-  * 支持按标签类型查找待办事项
-
-## 进度列表：
-
-* 前后端
-  * [x] 实现交互
-  * [x] 解决跨域问题 
-* 后端
-  * [x] 待办和标签的增删改查功能接口
-  * [ ] 为待办事项添加重要标签（区别于自定义标签）
-  * [ ] 为待办事项添加到期、提醒时间
-  * [ ] 用户登陆功能接口
-  * [ ] 数据互斥批量同步功能接口
-* 前端
-  * [x] 待办列表增加，完成，修改，删除
-  * [x] 标签增加，完成，修改，删除
-  * [ ] 待办列表精准查询与模糊查询
-  * [ ] 标签精准查询与模糊查询
-  * [ ] 点击标签筛选任务
-  * [ ] 用户登录功能
-  * [ ] 数据同步功能
-
-### 当前解决问题：
+这个应用被分为四部分
+* [后端数据库（开发中）](https://github.com/SpicyChickenFLY/never-todo-backend) - 使用Golang进行开发
+* [前端Web页面（开发中）](https://github.com/bluepongo/never-todo-frontend) - 使用Vue进行开发，可能会用dart写Vue
+* [PC端（Win/Linux/Mac）（发布v0.0.1）](https://github.com/bluepongo/never-todo-client)- 使用Electron-Vue框架搭建
+* [移动端（Android/IOS）（尚未开发）](https://github.com/SpicyChickenFLY/never-todo-mobile) - 使用Dart/Flutter搭建
 
 
+本项目为跨平台的never-todo系列产品提供了一个在线同步的后端服务功能，您可以在自己的服务器中部署该服务并在客户端中配置相应信息来实现同步功能，本项目由[SpicyChickenFLY](https://github.com/SpicyChickenFLY)与[bluepongo](https://github.com/bluepongo)合作开发
+
+## 实现功能
+* [x] 添加新的待办、标签
+* [x] 修改待办、标签内容
+* [x] 删除待办和标签（软删除）
+
+#### 项目搭建
+
+``` bash
+# 安装项目依赖
+npm install
+
+# 运行开发环境
+npm run dev
+
+# 构建对应开发平台的二进制安装包
+npm run build
+```
