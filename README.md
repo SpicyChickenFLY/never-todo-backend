@@ -23,13 +23,4 @@
 
 #### 项目搭建
 
-``` bash
-# 安装项目依赖
-npm install
 
-# 运行开发环境
-npm run dev
-
-# 构建对应开发平台的二进制安装包
-npm run build
-```
