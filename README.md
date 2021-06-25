@@ -1,4 +1,4 @@
-<img src="./static/icon-512.png" width = "100" height = "100" div align=center />
+<div align=center><img src="./static/logo.png" width = "200" height = "200" /></div>
 
 # never-todo-backend
 
