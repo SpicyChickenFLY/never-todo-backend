@@ -4,8 +4,8 @@ Description=mpgo
 [Service]
 Type=simple
 Restart=always
-RestartSec=3s
-ExecStart=/usr/local/never-todo
+RestartSec=5s
+ExecStart=/usr/local/never-todo/main start -c /etc/never-todo.ini
 
 [Install]
 WantedBy=multi-user.target

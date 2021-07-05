@@ -4,4 +4,4 @@ export GIN_MODE=release
 
 
 # TODO: make software right path
-/usr/local/never-todo/main -c /etc/never-todo.ini
+/usr/local/never-todo/main start -c /etc/never-todo.ini
