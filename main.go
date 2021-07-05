@@ -37,7 +37,7 @@ func main() {
 	currDir, err := os.Getwd()
 	if err != nil {
 		fmt.Printf("get current Directory failed: %s\n", err.Error())
-		panic(err)
+		os.Exit(1)
 	}
 
 	logPath := path.Join(currDir, defaultLogFileRelPath)
@@ -57,7 +57,7 @@ func main() {
 	if _, _, err := log.InitLoggerWithDefaultConfig(
 		logPath); err != nil {
 		fmt.Printf("Init logger failed: %s\n", err.Error())
-		panic(err)
+		os.Exit(1)
 	}
 
 	log.Info("=============================")
@@ -71,7 +71,7 @@ func main() {
 		log.Error(err.Error())
 		log.Info("Program Terminated")
 		log.Info("=============================")
-		panic(err)
+		os.Exit(1)
 	}
 
 	// get mysql root@localhost password
@@ -88,10 +88,11 @@ func main() {
 			userName, userPwd,
 			serverHost, serverPort,
 			dbName, dbCharset); err != nil {
+
 			log.Error(err.Error())
 			log.Info("Program Terminated")
 			log.Info("=============================")
-			panic(err)
+			os.Exit(1)
 		}
 		log.Info("mysql initialization compelete")
 	}
@@ -108,7 +109,7 @@ func main() {
 			log.Errorf("encounter error while listen and serve:\n", err)
 			log.Info("Program Terminated")
 			log.Info("=============================")
-			panic(err)
+			os.Exit(1)
 		}
 		log.Info("server initialization compelete")
 	}()
@@ -129,7 +130,7 @@ func main() {
 		log.Errorf("Server Shutdown:\n", err.Error())
 		log.Info("Program Terminated")
 		log.Info("=============================")
-		panic(err)
+		os.Exit(1)
 	}
 	// catching ctx.Done(). timeout of 1 seconds.
 	select {
