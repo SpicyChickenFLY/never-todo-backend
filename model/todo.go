@@ -8,12 +8,12 @@ import (
 
 // Task is a model for todo_task
 type Task struct {
-	ID         int       `json:"id" gorm:"primaryKey;autoIncrement"`
-	Content    string    `json:"content" gorm:"not null"`
-	Compeleted bool      `json:"compeleted" gorm:"not null"`
-	CreatedAt  time.Time `json:"created_at" gorm:"not null;default now()"`
-	UpdatedAt  time.Time `json:"updated_at" gorm:"not null;default now()"`
-	Deleted    bool      `json:"deleted" gorm:"not null;default 0"`
+	ID        int       `json:"id" gorm:"primaryKey;autoIncrement"`
+	Content   string    `json:"content" gorm:"not null"`
+	Completed bool      `json:"completed" gorm:"not null"`
+	CreatedAt time.Time `json:"created_at" gorm:"not null;default now()"`
+	UpdatedAt time.Time `json:"updated_at" gorm:"not null;default now()"`
+	Deleted   bool      `json:"deleted" gorm:"not null;default 0"`
 }
 
 // Tasks is a slice of Task
@@ -39,8 +39,8 @@ type Tags []Tag
 
 // TaskTag is a model of todo_task_tag
 type TaskTag struct {
-	TaskID int `gorm:"primaryKey"`
-	TagID  int `gorm:"primaryKey"`
+	TaskID int `json:"task_id" gorm:"primaryKey"`
+	TagID  int `json:"tag_id" gorm:"primaryKey"`
 }
 
 // TaskTags is a slice of TaskTag

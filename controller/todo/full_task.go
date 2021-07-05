@@ -125,15 +125,15 @@ func UpdFullTask(c *gin.Context) {
 		return
 	}
 	data := &struct {
-		TaskContent    string `json:"taskContent"`
-		TaskCompeleted bool   `json:"taskCompeleted"`
-		TagsID         []int  `json:"tagsID"`
+		TaskContent   string `json:"taskContent"`
+		TaskCompleted bool   `json:"taskCompleted"`
+		TagsID        []int  `json:"tagsID"`
 	}{}
 	c.BindJSON(&data)
 	task := model.Task{
-		ID:         taskID,
-		Content:    data.TaskContent,
-		Compeleted: data.TaskCompeleted,
+		ID:        taskID,
+		Content:   data.TaskContent,
+		Completed: data.TaskCompleted,
 	}
 	log.Printf("receive post request: %v", data)
 	tx := mysql.GormDB.Begin()
