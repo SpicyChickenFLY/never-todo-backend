@@ -54,8 +54,7 @@ func main() {
 	}
 
 	// Initialize log
-	if _, _, err := log.InitLoggerWithDefaultConfig(
-		logPath); err != nil {
+	if _, _, err := log.InitFileLoggerWithDefault(logPath); err != nil {
 		fmt.Printf("Init logger failed: %s\n", err.Error())
 		os.Exit(1)
 	}
